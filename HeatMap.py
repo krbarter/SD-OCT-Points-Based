@@ -9,7 +9,7 @@ from matplotlib.pyplot import figure
 figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
 
 class HeatMap:
-    def __init__(self, retinal_thickness, name, frame):
+    def __init__(self, retinal_thickness, name, frame, heat):
         self.retinal_thickness = retinal_thickness
         self.name = name
         self.frame_title = "Frame " + str(frame[0]) + "-" + str(frame[-1])
@@ -22,6 +22,7 @@ class HeatMap:
         self.pixel_width = 6 #standard = 4
         self.file_name = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         self.image_saved = False
+        self.heat = heat
 
     def getIsSaved(self):
         return self.image_saved
@@ -36,13 +37,18 @@ class HeatMap:
     def gradient(self):
         self.minR = np.amin(self.retinal_thickness)
         self.maxR = np.amax(self.retinal_thickness)
-        new_min = np.amin(self.maxR)
+
+        if self.heat == "A":
+            new_min = np.amin(self.maxR)
+        else:
+            new_min = int(self.heat)
+
         print(), print("MINUMUM VALUE: ", new_min)
         
         for x in self.retinal_thickness[::-1]:
             img = []
             for y in x:
-                img.append(y - 102)   # 155 OS 00014 = 113 for the minumin value for comparison // new_min
+                img.append(y - new_min)   # 155 OS 00014 = 113 for the minumin value for comparison // new_min
             self.retinal_array.append(img)
 
         color_gradient = [[0,100,250], [0,95,235], [0,90,255], [0,85,212], [0,80,199], [0,75,186],

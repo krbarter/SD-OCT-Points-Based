@@ -124,6 +124,9 @@ class Image:
     def getFrameList(self):
         return self.frame_list
 
+    def getHeat(self):
+        return self.s[8]
+
     def Scheduler(self):
         for x in range(self.start, self.stop):
             currentImage = self.img_List[self.image_set_number][x]
@@ -595,7 +598,8 @@ def __main__():
     retinal_thickness = image.getRetinalThickness()
     name = image.getName()
     frame = image.getFrameList()
-    retinalMap = HeatMap(retinal_thickness, name, frame)
+    heat = image.getHeat()
+    retinalMap = HeatMap(retinal_thickness, name, frame, heat)
     retinalMap.sceduler()
 
     #creating retinal heatmap2
