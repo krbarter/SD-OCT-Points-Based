@@ -253,7 +253,8 @@ class Image:
                     # if (top[-1] - top[0] >= self.min_gap_value and bot[-1] - bot[0] >= self.min_gap_value and top[0] != 0 and self.last_top_value - (bot[-1] - top[0]) >= -10)
                     # preventing two coloured points being on the sale point min gap standard - 5  low gap = 3
                     if (top[-1] - top[0] >= self.min_gap_value and bot[-1] - bot[0] >= self.min_gap_value and top[0] != 0 and self.last_top_value - (bot[-1] - top[0]) >= -10):
-                        image[medianPoint][pointx] = (0,0,255,-1) # red points
+                        image[medianPoint + 175][pointx] = (0,0,255,-1) # red points
+                        image[medianPoint + 176][pointx] = (0,0,255,-1) # red points
                         image[top[-1]][pointx] = (0,255,0,-1)    #top green
                         image[bot[0]][pointx] = (0,255,0,-1)     #bot green
                         image[top[0]][pointx] = (255,0,0,-1)     #top blue 
@@ -318,7 +319,7 @@ class Image:
 
         #saving the image to the image  (priting whne the image has been complete)
         image_scale = cv2.cvtColor(image,cv2.COLOR_RGB2BGR) # moving from cv2's BRG mode
-        image_crop = image_scale[0:650, 0:1000]
+        image_crop = image_scale[0:750, 0:1000]
         #path = "C:\\Users\\krbar\\Desktop\\Project\\Images"
         path = "Images"
         #name = time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
@@ -397,25 +398,9 @@ class Image:
         print("Volume and Percentage")
         print("Total Volume: ",      outer_distance_volume), print()
         print("NFL to GLC Volume: ",      white_top_volume), print("NFL/GLC Volume Percentage: ",      self.white_top_per), print()
-        print("GlC to Midpoint Volume: ",   mid_top_volume), print("GlC to Midpoint Volume Percentage: ",   self.mid_top_per), print()
-        print("Midpoint to ONL Volume: ",   mid_bot_volume), print("Midpoint to ONL Volume Percentage: ",   self.mid_bot_per), print()
-        print("ONL to Post Volume: ",     white_bot_volume), print("ONL to Post Volume Percentage: ",     self.white_bot_per), print()
+        print("ONL to RPE Volume: ",     white_bot_volume), print("ONL to RPE Volume Percentage: ",     self.white_bot_per), print()
         print("GLC to ONL Volume: ", inner_distance_volume), print("GLC to ONL Volume Percentage: ", self.inner_distance_per), print()
         #print("Animal Number: ", self.animal_number), print(self.frame_list)
-
-        """
-        print(self.top_points)
-        print(self.top_white)
-        print(self.mid_points)
-        print(self.bot_white)
-        print(self.bot_points)
-
-        print(len(self.top_points))
-        print(len(self.top_white))
-        print(len(self.mid_points))
-        print(len(self.bot_white))
-        print(len(self.bot_points))
-        """
         
         # at the end of the computation send the value of self.outer_distance_list to the heatmap
         cv2.waitKey(1)
@@ -431,29 +416,20 @@ class Image:
         sheet.write(0, 3, "Number of Readings", style)
         sheet.write(0, 6, "NFL/GLC (um)" , style)
         sheet.write(0, 7, "Number of Readings", style)
-        sheet.write(0, 10, "Inner Layer (um)" , style)
+        sheet.write(0, 10, "ONL/RPE (um)" , style)
         sheet.write(0, 11, "Number of Readings", style)
-        sheet.write(0, 14, "Outer Layer (um)" , style)
+        sheet.write(0, 14, "Combinned Inner Layer (um)" , style)
         sheet.write(0, 15, "Number of Readings", style)
-        sheet.write(0, 18, "Choriod Layer (um)" , style)
-        sheet.write(0, 19, "Number of Readings", style)
-        sheet.write(0, 22, "Combinned Inner Layer (um)" , style)
-        sheet.write(0, 23, "Number of Readings", style)
 
         #volumes percentages
-        sheet.write(0,  26, "Specimen", style)
-        sheet.write(3,  26, "NFL/GLC Volume Percentage", style)
-        sheet.write(6,  26, "Inner Layer Volume Percentage", style) 
-        sheet.write(9,  26, "Outer Layer Volume Percentage", style) 
-        sheet.write(12, 26, "Choriod Layer Volume Percentage", style)
-        sheet.write(15, 26, "Combinned Inner Layer Volume Percentage", style)
-        sheet.write(18, 26, "White Value Threshold", style)
-        sheet.write(21, 26, "Minimum Gap Threshold", style)
-        sheet.write(24, 26, "Maximum Gap Threshold", style)
-        sheet.write(27, 26, "Mimimum Thickness Value", style)
-        sheet.write(30, 26, "End Bouds", style)
-        sheet.write(33, 26, "End Bouds Threshold Values", style)
-
+        sheet.write(0,  20, "Specimen", style)
+        sheet.write(3,  20, "NFL/GLC Volume Percentage", style)
+        sheet.write(6,  20, "Combinned Inner Layer Volume Percentage", style) 
+        sheet.write(9,  20, "ONL/RPE Volume Percentage", style) 
+        sheet.write(12, 20, "White Value Threshold", style)
+        sheet.write(15, 20, "Minimum Gap Threshold", style)
+        sheet.write(18, 20, "Maximum Gap Threshold", style)
+        sheet.write(21, 20, "Mimimum Thickness Value", style)
         
         listEnd = len(self.outer_distance_list)
         for x in range(0, listEnd):
@@ -462,28 +438,20 @@ class Image:
             sheet.write(x + 1, 3,  self.outer_distance_measurement_number[x])  # Number of Measurements
             sheet.write(x + 1, 6,  self.white_top_list[x]* self.newton_meter_conversion)                     # NFL to GLC
             sheet.write(x + 1, 7,  self.white_top_measurement_number[x])       # Number of Measurements
-            sheet.write(x + 1, 10, self.mid_top_list[x]* self.newton_meter_conversion)                       # GlC to Midpoint
-            sheet.write(x + 1, 11, self.mid_top_measurement_number[x])         # Number of Measurements                                       
-            sheet.write(x + 1, 14, self.mid_bot_list[x]* self.newton_meter_conversion)                       #Midpoint to ONL
-            sheet.write(x + 1, 15, self.mid_bot_measurement_number[x])         # Number of Measurements
-            sheet.write(x + 1, 18, self.white_bot_list[x]* self.newton_meter_conversion)                     # ONL to Post
-            sheet.write(x + 1, 19, self.white_bot_measurement_number[x])       # Number of Measurements
-            sheet.write(x + 1, 22, self.inner_distance_list[x]* self.newton_meter_conversion)                # GLC to ONL
-            sheet.write(x + 1, 23, self.inner_distance_measurement_number[x])  # Number of Measurements
+            sheet.write(x + 1, 10, self.white_bot_list[x]* self.newton_meter_conversion)                     # ONL to Post
+            sheet.write(x + 1, 11, self.white_bot_measurement_number[x])       # Number of Measurements
+            sheet.write(x + 1, 14, self.inner_distance_list[x]* self.newton_meter_conversion)                # GLC to Coroid
+            sheet.write(x + 1, 15, self.inner_distance_measurement_number[x])  # Number of Measurements
         #end values
-        sheet.write(1,  26, self.animal_number)
-        sheet.write(4,  26, self.white_top_per)
-        sheet.write(7,  26, self.mid_top_per)
-        sheet.write(10, 26, self.mid_bot_per)
-        sheet.write(13, 26, self.white_bot_per)
-        sheet.write(16, 26, self.inner_distance_per)
+        sheet.write(1,  20, self.animal_number)
+        sheet.write(4,  20, self.white_top_per)
+        sheet.write(7,  20, self.inner_distance_per)
+        sheet.write(10, 20, self.white_bot_per)
         #settings varibles
-        sheet.write(19, 26, self.white_value_threshold)
-        sheet.write(22, 26, self.minimum_gap_value)
-        sheet.write(25, 26, self.maximum_gap_value)
-        sheet.write(28, 26, self.min_gap_value)
-        sheet.write(31, 26, self.end_bound_string)
-        sheet.write(34, 26, self.white_value_threshold_string)        
+        sheet.write(13, 20, self.white_value_threshold)
+        sheet.write(16, 20, self.minimum_gap_value)
+        sheet.write(19, 20, self.maximum_gap_value)
+        sheet.write(22, 20, self.min_gap_value)
         
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         wb.save(self.animal_number[8:] + ".xls")
@@ -515,7 +483,6 @@ class Image:
         sheet.write(9,  26, "Outer Layer Volume Percentage", boldtext) 
         sheet.write(12, 26, "Choriod Layer Volume Percentage", boldtext)
         sheet.write(15, 26, "Combinned Inner Layer Volume Percentage", boldtext)
-        sheet.write(18, 26, "White Value Threshold", boldtext)
         sheet.write(21, 26, "Minimum Gap Threshold", boldtext)
         sheet.write(24, 26, "Maximum Gap Threshold", boldtext)
         sheet.write(27, 26, "Mimimum Thickness Value", boldtext)
@@ -540,7 +507,7 @@ class Image:
         #end values
         sheet.write(1,  26, self.animal_number)
         sheet.write(4,  26, self.white_top_per)
-        sheet.write(7,  26, self.mid_top_per)
+        sheet.write(7,  26, self.inner_distance_per)
         sheet.write(10, 26, self.mid_bot_per)
         sheet.write(13, 26, self.white_bot_per)
         sheet.write(16, 26, self.inner_distance_per)
