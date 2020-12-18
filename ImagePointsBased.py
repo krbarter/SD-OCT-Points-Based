@@ -253,8 +253,8 @@ class Image:
                     # if (top[-1] - top[0] >= self.min_gap_value and bot[-1] - bot[0] >= self.min_gap_value and top[0] != 0 and self.last_top_value - (bot[-1] - top[0]) >= -10)
                     # preventing two coloured points being on the sale point min gap standard - 5  low gap = 3
                     if (top[-1] - top[0] >= self.min_gap_value and bot[-1] - bot[0] >= self.min_gap_value and top[0] != 0 and self.last_top_value - (bot[-1] - top[0]) >= -10):
-                        image[medianPoint + 175][pointx] = (0,0,255,-1) # red points
-                        image[medianPoint + 176][pointx] = (0,0,255,-1) # red points
+                        #image[medianPoint + 205][pointx] = (0,0,255,-1) # red points
+                        #image[medianPoint + 206][pointx] = (0,0,255,-1) # red points
                         image[top[-1]][pointx] = (0,255,0,-1)    #top green
                         image[bot[0]][pointx] = (0,255,0,-1)     #bot green
                         image[top[0]][pointx] = (255,0,0,-1)     #top blue 
@@ -416,16 +416,16 @@ class Image:
         sheet.write(0, 3, "Number of Readings", style)
         sheet.write(0, 6, "NFL/GLC (um)" , style)
         sheet.write(0, 7, "Number of Readings", style)
-        sheet.write(0, 10, "ONL/RPE (um)" , style)
+        sheet.write(0, 10, "IS/RPE (um)" , style)
         sheet.write(0, 11, "Number of Readings", style)
-        sheet.write(0, 14, "Combinned Inner Layer (um)" , style)
+        sheet.write(0, 14, "IPS/INL/OPL/ONL/IS (um)" , style)
         sheet.write(0, 15, "Number of Readings", style)
 
         #volumes percentages
         sheet.write(0,  20, "Specimen", style)
         sheet.write(3,  20, "NFL/GLC Volume Percentage", style)
-        sheet.write(6,  20, "Combinned Inner Layer Volume Percentage", style) 
-        sheet.write(9,  20, "ONL/RPE Volume Percentage", style) 
+        sheet.write(6,  20, "IPS/INL/OPL/ONL/IS Volume Percentage", style) 
+        sheet.write(9,  20, "IS/RPE Volume Percentage", style) 
         sheet.write(12, 20, "White Value Threshold", style)
         sheet.write(15, 20, "Minimum Gap Threshold", style)
         sheet.write(18, 20, "Maximum Gap Threshold", style)
