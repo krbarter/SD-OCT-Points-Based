@@ -45,7 +45,7 @@ class HeatMap:
 
         print(), print("MINUMUM VALUE: ", new_min)
         
-        for x in self.retinal_thickness[::-1]:
+        for x in self.retinal_thickness[]:
             img = []
             for y in x:
                 img.append(y - new_min)   # 155 OS 00014 = 113 for the minumin value for comparison // new_min
