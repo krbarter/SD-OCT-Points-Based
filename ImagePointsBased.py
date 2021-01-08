@@ -141,7 +141,7 @@ class Image:
                         self.white_value_threshold = self.white_value_threshold_list[1]  # won't return to orginal value
                     else:
                         self.white_value_threshold = self.white_value_threshold_list[0]
-                Image.medianDerterminant(self, img)
+                Image.medianDerterminant(self, img, self.s[9])
             else:
                 print("This Image has an error if type: ")
 
@@ -204,7 +204,7 @@ class Image:
         return feature_points
 
     #band detection to save on computing time
-    def medianDerterminant(self, image):
+    def medianDerterminant(self, image, sl):
         outer_distance     = []
         white_top_distance = []
         mid_top_distance   = []
@@ -212,6 +212,8 @@ class Image:
         white_bot          = []
         white_top          = []
         inner_distance     = []
+
+        smooth = image.copy()
 
         #setting the points for the heatmap image
         image_bot       = []
@@ -259,22 +261,11 @@ class Image:
                         image[bot[0]][pointx] = (0,255,0,-1)     #bot green
                         image[top[0]][pointx] = (255,0,0,-1)     #top blue 
                         image[bot[-1]][pointx] = (255,0,0,-1)    #bot blue
-                        
-                    """
-                    #line method (slow)
-                    cv2.line(image, (pointx,medianPoint), (pointx,medianPoint), (0,0,255), 1)
-                    cv2.line(image, (pointx,top[-1]), (pointx,top[-1]), (0,255,0), 1)
-                    cv2.line(image, (pointx, bot[0]), (pointx, bot[0]), (0,255,0), 1)
-                    cv2.line(image, (pointx, top[0]), (pointx, top[0]), (255,0,0), 1)
-                    cv2.line(image, (pointx, bot[-1]), (pointx, bot[-1]), (255,0,0), 1)
-                    
-                    #circle method (only down to two pixels)
-                    cv2.circle(image,(pointx,medianPoint), 1, (0,0,255), -1) #midpoint
-                    cv2.circle(image,(pointx,top[-1]), 1, (0,255,0), -1)
-                    cv2.circle(image,(pointx, bot[0]), 1, (0,255,0), -1)
-                    cv2.circle(image,(pointx, top[0]), 1, (255,0,0), -1)
-                    cv2.circle(image,(pointx, bot[-1]), 1, (255,0,0), -1)
-                    """
+
+                        if sl == "s":
+                            smooth[medianPoint][pointx] = (0,0,255,-1) # red points
+                            smooth[medianPoint][pointx] = (0,0,255,-1) # red points
+
 
                     #geting heatmap points
                     image_top.append(top[0])
@@ -326,6 +317,13 @@ class Image:
         self.name = self.animal_number[8:]
         name = self.animal_number[8:] + "  " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
         mpimg.imsave(os.path.join(path , name), image_crop)
+
+        if sl == "s":
+            image_s = cv2.cvtColor(smooth,cv2.COLOR_RGB2BGR)
+            path = "SmoothingLine"
+            self.name = self.animal_number[8:]
+            name = self.animal_number[8:] + "  " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
+            mpimg.imsave(os.path.join(path , name), image_s)
 
         #getting the heatmap points for each image
         self.top_points.append(image_top)
