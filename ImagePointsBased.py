@@ -151,7 +151,9 @@ class Image:
         
         """Data Storage"""
         if int(self.s[7]) == 1:  Image.StoreDataClassic(self)
-        if int(self.s[7]) == 2:  Image.StoreDataModern(self) 
+        if int(self.s[7]) == 2:  
+            Image.StoreDataModern(self)
+            Image.StoreCommaSeperatedValues(self)
         if int(self.s[7]) == 3:  Image.StoreCommaSeperatedValues(self)
         cv2.destroyAllWindows()
 
@@ -458,97 +460,78 @@ class Image:
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         workbook = xlsxwriter.Workbook((self.animal_number[8:] + " " + time_current + ".xlsx"))
         sheet = workbook.add_worksheet()
-        boldtext = workbook.add_format({'bold': True})
+        style = workbook.add_format({'bold': True})
 
-        sheet.write(0, 0, "Frame Number", boldtext)
-        sheet.write(0, 2, "Retinal Thickness (um)" , boldtext)
-        sheet.write(0, 3, "Number of Readings", boldtext)
-        sheet.write(0, 6, "NFL/GLC (um)" , boldtext)
-        sheet.write(0, 7, "Number of Readings", boldtext)
-        sheet.write(0, 10, "Inner Layer (um)" , boldtext)
-        sheet.write(0, 11, "Number of Readings", boldtext)
-        sheet.write(0, 14, "Outer Layer (um)" , boldtext)
-        sheet.write(0, 15, "Number of Readings", boldtext)
-        sheet.write(0, 18, "Choriod Layer (um)" , boldtext)
-        sheet.write(0, 19, "Number of Readings", boldtext)
-        sheet.write(0, 22, "Combinned Inner Layer (um)" , boldtext)
-        sheet.write(0, 23, "Number of Readings", boldtext)
+        sheet.write(0, 0, "Frame Number", style)
+        sheet.write(0, 2, "Retinal Thickness (um)" , style)
+        sheet.write(0, 3, "Number of Readings", style)
+        sheet.write(0, 6, "NFL/GLC (um)" , style)
+        sheet.write(0, 7, "Number of Readings", style)
+        sheet.write(0, 10, "IS/RPE (um)" , style)
+        sheet.write(0, 11, "Number of Readings", style)
+        sheet.write(0, 14, "IPS/INL/OPL/ONL/IS (um)" , style)
+        sheet.write(0, 15, "Number of Readings", style)
 
         #volumes percentages
-        sheet.write(0,  26, "Specimen", boldtext)
-        sheet.write(3,  26, "NFL/GLC Volume Percentage", boldtext)
-        sheet.write(6,  26, "Inner Layer Volume Percentage", boldtext) 
-        sheet.write(9,  26, "Outer Layer Volume Percentage", boldtext) 
-        sheet.write(12, 26, "Choriod Layer Volume Percentage", boldtext)
-        sheet.write(15, 26, "Combinned Inner Layer Volume Percentage", boldtext)
-        sheet.write(21, 26, "Minimum Gap Threshold", boldtext)
-        sheet.write(24, 26, "Maximum Gap Threshold", boldtext)
-        sheet.write(27, 26, "Mimimum Thickness Value", boldtext)
-        sheet.write(30, 26, "End Bouds", boldtext)
-        sheet.write(33, 26, "End Bouds Threshold Values", boldtext)
-
+        sheet.write(0,  20, "Specimen", style)
+        sheet.write(3,  20, "NFL/GLC Volume Percentage", style)
+        sheet.write(6,  20, "IPS/INL/OPL/ONL/IS Volume Percentage", style) 
+        sheet.write(9,  20, "IS/RPE Volume Percentage", style) 
+        sheet.write(12, 20, "White Value Threshold", style)
+        sheet.write(15, 20, "Minimum Gap Threshold", style)
+        sheet.write(18, 20, "Maximum Gap Threshold", style)
+        sheet.write(21, 20, "Mimimum Thickness Value", style)
+        
         listEnd = len(self.outer_distance_list)
         for x in range(0, listEnd):
-            sheet.write(x + 1, 0,  self.frame_list[x])                         # Frame Number            Measurements:
-            sheet.write(x + 1, 2,  self.outer_distance_list[x] * self.newton_meter_conversion)                # Retinal Thicness
+            sheet.write(x + 1, 0,  self.frame_list[x])                         # Frame Number                Messurments:
+            sheet.write(x + 1, 2,  self.outer_distance_list[x] * self.newton_meter_conversion)               # Retinal Thicness
             sheet.write(x + 1, 3,  self.outer_distance_measurement_number[x])  # Number of Measurements
-            sheet.write(x + 1, 6,  self.white_top_list[x] * self.newton_meter_conversion)                     # NFL to GLC
+            sheet.write(x + 1, 6,  self.white_top_list[x]* self.newton_meter_conversion)                     # NFL to GLC
             sheet.write(x + 1, 7,  self.white_top_measurement_number[x])       # Number of Measurements
-            sheet.write(x + 1, 10, self.mid_top_list[x] * self.newton_meter_conversion)                       # GlC to Midpoint
-            sheet.write(x + 1, 11, self.mid_top_measurement_number[x])         # Number of Measurements                                       
-            sheet.write(x + 1, 14, self.mid_bot_list[x] * self.newton_meter_conversion)                       #Midpoint to ONL
-            sheet.write(x + 1, 15, self.mid_bot_measurement_number[x])         # Number of Measurements
-            sheet.write(x + 1, 18, self.white_bot_list[x] * self.newton_meter_conversion)                     # ONL to Post
-            sheet.write(x + 1, 19, self.white_bot_measurement_number[x])       # Number of Measurements
-            sheet.write(x + 1, 22, self.inner_distance_list[x] * self.newton_meter_conversion)                # GLC to ONL
-            sheet.write(x + 1, 23, self.inner_distance_measurement_number[x])  # Number of Measurements
+            sheet.write(x + 1, 10, self.white_bot_list[x]* self.newton_meter_conversion)                     # ONL to Post
+            sheet.write(x + 1, 11, self.white_bot_measurement_number[x])       # Number of Measurements
+            sheet.write(x + 1, 14, self.inner_distance_list[x]* self.newton_meter_conversion)                # GLC to Coroid
+            sheet.write(x + 1, 15, self.inner_distance_measurement_number[x])  # Number of Measurements
         #end values
-        sheet.write(1,  26, self.animal_number)
-        sheet.write(4,  26, self.white_top_per)
-        sheet.write(7,  26, self.inner_distance_per)
-        sheet.write(10, 26, self.mid_bot_per)
-        sheet.write(13, 26, self.white_bot_per)
-        sheet.write(16, 26, self.inner_distance_per)
+        sheet.write(1,  20, self.animal_number)
+        sheet.write(4,  20, self.white_top_per)
+        sheet.write(7,  20, self.inner_distance_per)
+        sheet.write(10, 20, self.white_bot_per)
         #settings varibles
-        sheet.write(19, 26, self.white_value_threshold)
-        sheet.write(22, 26, self.minimum_gap_value)
-        sheet.write(25, 26, self.maximum_gap_value)
-        sheet.write(28, 26, self.min_gap_value)
-        sheet.write_string(31, 26, self.end_bound_string)
-        sheet.write_string(34, 26, self.white_value_threshold_string)
+        sheet.write(13, 20, self.white_value_threshold)
+        sheet.write(16, 20, self.minimum_gap_value)
+        sheet.write(19, 20, self.maximum_gap_value)
+        sheet.write(22, 20, self.min_gap_value)
         workbook.close()
 
     def StoreCommaSeperatedValues(self): #csv format
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         listEnd = len(self.outer_distance_list)
         with open(self.animal_number[8:] + ".csv", "w") as file:
-            file.write("Frame Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , Inner Layer (um),Number of Readings, , Outer Layer (um), Number of Readings, , Choriod Layer (um), Number of Readings, , Combinned Inner Layer (um), Number of Readings,\n")
+            file.write("Frame Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , IS/RPE (um), Number of Readings, , IPS/INL/OPL/ONL/IS (um), Number of Readings,\n")
             for x in range(0, listEnd, 1):
                 frame_num       = str(self.frame_list[x])                            # Frame Number            Measurements:
                 out_dist        = str(self.outer_distance_list[x] * self.newton_meter_conversion)                   # Retinal Thicness
                 out_dist_number = str(self.outer_distance_measurement_number[x])     # Number of Measurements
                 wt_top          = str(self.white_top_list[x] * self.newton_meter_conversion)                        # NFL to GLC
                 wt_top_number   = str(self.white_top_measurement_number[x])          # Number of Measurements
-                md_top          = str(self.mid_top_list[x] * self.newton_meter_conversion)                          # GlC to midpoint
-                md_top_number   = str(self.mid_top_measurement_number[x])            # Number of Measurements
-                md_bot          = str(self.mid_bot_list[x] * self.newton_meter_conversion)                          # midopoint to ONL
-                md_bot_number   = str(self.mid_bot_measurement_number[x])            # Number of Measurements
                 wt_bot          = str(self.white_bot_list[x] * self.newton_meter_conversion)                        # ONL to Post
                 wt_bot_number   = str(self.white_bot_measurement_number[x])          # Number of Measurements
                 in_dist         = str(self.inner_distance_list[x] * self.newton_meter_conversion)                   # GLC to ONL
                 in_dist_number  = str(self.inner_distance_measurement_number[x])     # Number of Measurements
                 seperator = ","
                 blank = " "
-                tojoin = [frame_num, blank, out_dist,  out_dist_number, blank, wt_top, wt_top_number, blank, md_top, md_top_number, blank, md_bot, md_bot_number, blank, wt_bot, wt_bot_number, blank, in_dist, in_dist_number]
+                tojoin = [frame_num, blank, out_dist,  out_dist_number, blank, wt_top, wt_top_number, blank, wt_bot, wt_bot_number, blank, in_dist, in_dist_number]
                 x = seperator.join(tojoin)
                 file.write(x + "\n")
             file.write("\n")
-            file.write("Specimen, ,NFL/GLC Volume Percentage, ,Inner Layer Volume Percentage, ,Outer Layer Volume Percentage, , Choriod Layer Volume Percentage, , Combinned Inner Layer Volume Percentage\n")
-            line = self.animal_number + ", ," + str(self.white_top_per) + ", ," + str(self.mid_top_per) + ", ," + str(self.mid_bot_per) + ", ," + str(self.white_bot_per) + ", ," + str(self.inner_distance_per) + "\n"
+            file.write("Specimen, ,NFL/GLC Volume Percentage, ,IPS/INL/OPL/ONL/IS Volume Percentage, ,IS/RPE Volume Percentage\n")
+            line = self.animal_number + ", ," + str(self.white_top_per) + ", ," + str(self.inner_distance_per) + ", ," + str(self.white_bot_per) + "\n"
             file.write(line)
             file.write("\n")
-            file.write("White Value Threshold, , Minimum Gap Threshold, , Maximum Gap Threshold, , Mimimum Thickness Value, , End Bounds, , End Bouds Threshold Values\n")
-            line2 = str(self.white_value_threshold) + ", ," + str(self.minimum_gap_value) + ", ," + str(self.maximum_gap_value) + ", ," + str(self.min_gap_value) + ", ," + str(self.end_bound_string) + ", ," + str(self.white_value_threshold_string) + "\n"
+            file.write("White Value Threshold, , Minimum Gap Threshold, , Maximum Gap Threshold, , Mimimum Thickness Value\n")
+            line2 = str(self.white_value_threshold) + ", ," + str(self.minimum_gap_value) + ", ," + str(self.maximum_gap_value) + ", ," + str(self.min_gap_value) + "\n"
             file.write(line2)
         file.close()
 
