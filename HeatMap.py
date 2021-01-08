@@ -19,7 +19,7 @@ class HeatMap:
         self.color_key = []
         self.minR = 0
         self.maxR = 0
-        self.pixel_width = 6 #standard = 4
+        self.pixel_width = 9 #standard = 4
         self.file_name = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         self.image_saved = False
         self.heat = heat
@@ -45,7 +45,7 @@ class HeatMap:
 
         print(), print("MINUMUM VALUE: ", new_min)
         
-        for x in self.retinal_thickness[]:
+        for x in self.retinal_thickness:
             img = []
             for y in x:
                 img.append(y - new_min)   # 155 OS 00014 = 113 for the minumin value for comparison // new_min
@@ -81,7 +81,7 @@ class HeatMap:
 
             #adding four lines per measurement to extend the image
             for x in range(self.pixel_width):
-                self.retinal_gradient.append(line_in)
+                self.retinal_gradient.append(line_in)       
             #image gradient key
 
    
@@ -162,5 +162,5 @@ class HeatMap:
 
 if __name__ == "__main__":
     retinal_thickness = [[45, 23], [23, 12], [12]]
-    retinalMap = HeatMap(retinal_thickness, "Some", [40, 40])
+    retinalMap = HeatMap(retinal_thickness, "Some", [40, 40], "A")
     retinalMap.sceduler()
