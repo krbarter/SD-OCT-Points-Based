@@ -10,6 +10,7 @@ from time import gmtime, strftime
 from xlwt import Workbook
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import figure
+from matplotlib.pyplot import Axes
 figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
 from Project import Directory # file imports
 from HeatMap import HeatMap
@@ -223,7 +224,7 @@ class Image:
         image_mid       = []
         image_white_bot = []
         image_top       = []
-        
+
         for pointx in range(0, 1000):
             midpath  = []
             midwhite = []
@@ -275,6 +276,9 @@ class Image:
                     image_mid.append(medianPoint)
                     image_white_bot.append(bot[0])
                     image_bot.append(bot[-1])
+
+                    #ax = Axes3D(fig)
+                    #ax.scatter(x, top[0], value_to_print)
                     
                     #total width of the retina
                     total_width = bot[-1] - top[0]
@@ -416,16 +420,16 @@ class Image:
         sheet.write(0, 3, "Number of Readings", style)
         sheet.write(0, 6, "NFL/GLC (um)" , style)
         sheet.write(0, 7, "Number of Readings", style)
-        sheet.write(0, 10, "IS/RPE (um)" , style)
+        sheet.write(0, 10, "OS/RPE (um)" , style)
         sheet.write(0, 11, "Number of Readings", style)
-        sheet.write(0, 14, "IPS/INL/OPL/ONL/IS (um)" , style)
+        sheet.write(0, 14, "IPL/INL/OPL/ONL/IS (um)" , style)
         sheet.write(0, 15, "Number of Readings", style)
 
         #volumes percentages
         sheet.write(0,  20, "Specimen", style)
         sheet.write(3,  20, "NFL/GLC Volume Percentage", style)
-        sheet.write(6,  20, "IPS/INL/OPL/ONL/IS Volume Percentage", style) 
-        sheet.write(9,  20, "IS/RPE Volume Percentage", style) 
+        sheet.write(6,  20, "IPL/INL/OPL/ONL/IS Volume Percentage", style) 
+        sheet.write(9,  20, "OS/RPE Volume Percentage", style) 
         sheet.write(12, 20, "White Value Threshold", style)
         sheet.write(15, 20, "Minimum Gap Threshold", style)
         sheet.write(18, 20, "Maximum Gap Threshold", style)
@@ -467,16 +471,16 @@ class Image:
         sheet.write(0, 3, "Number of Readings", style)
         sheet.write(0, 6, "NFL/GLC (um)" , style)
         sheet.write(0, 7, "Number of Readings", style)
-        sheet.write(0, 10, "IS/RPE (um)" , style)
+        sheet.write(0, 10, "OS/RPE (um)" , style)
         sheet.write(0, 11, "Number of Readings", style)
-        sheet.write(0, 14, "IPS/INL/OPL/ONL/IS (um)" , style)
+        sheet.write(0, 14, "IPL/INL/OPL/ONL/IS (um)" , style)
         sheet.write(0, 15, "Number of Readings", style)
 
         #volumes percentages
         sheet.write(0,  20, "Specimen", style)
         sheet.write(3,  20, "NFL/GLC Volume Percentage", style)
-        sheet.write(6,  20, "IPS/INL/OPL/ONL/IS Volume Percentage", style) 
-        sheet.write(9,  20, "IS/RPE Volume Percentage", style) 
+        sheet.write(6,  20, "IPL/INL/OPL/ONL/IS Volume Percentage", style) 
+        sheet.write(9,  20, "OS/RPE Volume Percentage", style) 
         sheet.write(12, 20, "White Value Threshold", style)
         sheet.write(15, 20, "Minimum Gap Threshold", style)
         sheet.write(18, 20, "Maximum Gap Threshold", style)
@@ -509,7 +513,7 @@ class Image:
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         listEnd = len(self.outer_distance_list)
         with open(self.animal_number[8:] + ".csv", "w") as file:
-            file.write("Frame Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , IS/RPE (um), Number of Readings, , IPS/INL/OPL/ONL/IS (um), Number of Readings,\n")
+            file.write("Frame Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , OS/RPE (um), Number of Readings, , IPL/INL/OPL/ONL/IS (um), Number of Readings,\n")
             for x in range(0, listEnd, 1):
                 frame_num       = str(self.frame_list[x])                            # Frame Number            Measurements:
                 out_dist        = str(self.outer_distance_list[x] * self.newton_meter_conversion)                   # Retinal Thicness
@@ -526,7 +530,7 @@ class Image:
                 x = seperator.join(tojoin)
                 file.write(x + "\n")
             file.write("\n")
-            file.write("Specimen, ,NFL/GLC Volume Percentage, ,IPS/INL/OPL/ONL/IS Volume Percentage, ,IS/RPE Volume Percentage\n")
+            file.write("Specimen, ,NFL/GLC Volume Percentage, ,IPL/INL/OPL/ONL/IS Volume Percentage, ,OS/RPE Volume Percentage\n")
             line = self.animal_number + ", ," + str(self.white_top_per) + ", ," + str(self.inner_distance_per) + ", ," + str(self.white_bot_per) + "\n"
             file.write(line)
             file.write("\n")
