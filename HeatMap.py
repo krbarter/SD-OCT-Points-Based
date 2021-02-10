@@ -38,7 +38,7 @@ class HeatMap:
         self.minR = np.amin(self.retinal_thickness)
         self.maxR = np.amax(self.retinal_thickness)
 
-        if self.heat == "A":
+        if self.heat == "A" or self.heat == "a":
             new_min = np.amin(self.maxR)
         else:
             new_min = int(self.heat)
@@ -71,7 +71,7 @@ class HeatMap:
         #spplying the color values
         for line in self.retinal_array:
             line_in = []
-            for x in line:
+            for x in line[::-1]:
                 if (x >= len(color_gradient)):
                     line_in.append([105,0,0])
                 elif (x < 0):
@@ -146,10 +146,12 @@ class HeatMap:
         cv2.putText(blank_image, "Min",(250, len(self.retinal_gradient) - 15), font, 1,(255,255,255),1,cv2.LINE_AA)
         cv2.putText(blank_image, "Max",(685, len(self.retinal_gradient) - 15), font, 1,(255,255,255),1,cv2.LINE_AA)
 
-        cv2.imwrite(self.file_name + ".tiff", blank_image)
+        dim = (1000, 1000)
+        resized = cv2.resize(blank_image, dim, interpolation = cv2.INTER_AREA)
+        cv2.imwrite(self.file_name + ".tiff", resized)
         print(self.file_name + ".tiff")
         self.image_saved = True #saves the image in the current directory
-        cv2.imshow("Retinal Heatmap", blank_image)
+        #cv2.imshow("Retinal Heatmap", blank_image)
 
     #creating the click line to show image of the measurement
     def clickbox(self):
