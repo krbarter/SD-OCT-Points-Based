@@ -424,7 +424,6 @@ class Image:
         sheet.write(0, 14, "OS/RPE (um)" , style)
         sheet.write(0, 15, "Number of Readings", style)
 
-
         #volumes percentages
         sheet.write(0,  20, "Specimen", style)
         sheet.write(3,  20, "NFL/GLC Volume Percentage", style)
@@ -437,20 +436,24 @@ class Image:
         
         listEnd = len(self.outer_distance_list)
         for x in range(0, listEnd):
+            outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 2)
+            wtop    = round(self.white_top_list[x]* self.newton_meter_conversion, 2)  
+            indist  = round(self.inner_distance_list[x]* self.newton_meter_conversion, 2)
+            wbot    = round(self.white_bot_list[x]* self.newton_meter_conversion, 2)
             sheet.write(x + 1, 0,  self.frame_list[x])                         # Frame Number                Messurments:
-            sheet.write(x + 1, 2,  self.outer_distance_list[x] * self.newton_meter_conversion)               # Retinal Thicness
+            sheet.write(x + 1, 2,  outdist)               # Retinal Thicness
             sheet.write(x + 1, 3,  self.outer_distance_measurement_number[x])  # Number of Measurements
-            sheet.write(x + 1, 6,  self.white_top_list[x]* self.newton_meter_conversion)                     # NFL to GLC
+            sheet.write(x + 1, 6,  wtop)                     # NFL to GLC
             sheet.write(x + 1, 7,  self.white_top_measurement_number[x])       # Number of Measurements
-            sheet.write(x + 1, 10, self.inner_distance_list[x]* self.newton_meter_conversion)                # GLC to Coroi
+            sheet.write(x + 1, 10, indist)                # GLC to Coroi
             sheet.write(x + 1, 11, self.inner_distance_measurement_number[x])  # Number of Measurements
-            sheet.write(x + 1, 14, self.white_bot_list[x]* self.newton_meter_conversion)                     # ONL to Post
+            sheet.write(x + 1, 14, wbot)                     # ONL to Post
             sheet.write(x + 1, 15, self.white_bot_measurement_number[x])       # Number of Measurements
         #end values
         sheet.write(1,  20, self.animal_number)
-        sheet.write(4,  20, self.white_top_per)
-        sheet.write(7,  20, self.inner_distance_per)
-        sheet.write(10, 20, self.white_bot_per)
+        sheet.write(4,  20, round(self.white_top_per, 2))
+        sheet.write(7,  20, round(self.inner_distance_per, 2))
+        sheet.write(10, 20, round(self.white_bot_per, 2))
         #settings varibles
         sheet.write(13, 20, self.white_value_threshold)
         sheet.write(16, 20, self.minimum_gap_value)
@@ -488,21 +491,25 @@ class Image:
         
         listEnd = len(self.outer_distance_list)
         for x in range(0, listEnd):
+            outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 2)
+            wtop    = round(self.white_top_list[x]* self.newton_meter_conversion, 2)  
+            indist  = round(self.inner_distance_list[x]* self.newton_meter_conversion, 2)
+            wbot    = round(self.white_bot_list[x]* self.newton_meter_conversion, 2)
             sheet.write(x + 1, 0,  self.frame_list[x])                         # Frame Number                Messurments:
-            sheet.write(x + 1, 2,  self.outer_distance_list[x] * self.newton_meter_conversion)               # Retinal Thicness
+            sheet.write(x + 1, 2,  outdist)               # Retinal Thicness
             sheet.write(x + 1, 3,  self.outer_distance_measurement_number[x])  # Number of Measurements
-            sheet.write(x + 1, 6,  self.white_top_list[x]* self.newton_meter_conversion)                     # NFL to GLC
+            sheet.write(x + 1, 6,  wtop)                     # NFL to GLC
             sheet.write(x + 1, 7,  self.white_top_measurement_number[x])       # Number of Measurements
-            sheet.write(x + 1, 10, self.inner_distance_list[x]* self.newton_meter_conversion)                # GLC to Coroi
+            sheet.write(x + 1, 10, indist)                # GLC to Coroi
             sheet.write(x + 1, 11, self.inner_distance_measurement_number[x])  # Number of Measurements
-            sheet.write(x + 1, 14, self.white_bot_list[x]* self.newton_meter_conversion)                     # ONL to Post
+            sheet.write(x + 1, 14, wbot)                     # ONL to Post
             sheet.write(x + 1, 15, self.white_bot_measurement_number[x])       # Number of Measurements
         
         #end values
         sheet.write(1,  20, self.animal_number)
-        sheet.write(4,  20, self.white_top_per)
-        sheet.write(7,  20, self.inner_distance_per)
-        sheet.write(10, 20, self.white_bot_per)
+        sheet.write(4,  20, round(self.white_top_per, 2))
+        sheet.write(7,  20, round(self.inner_distance_per, 2))
+        sheet.write(10, 20, round(self.white_bot_per, 2))
         #settings varibles
         sheet.write(13, 20, self.white_value_threshold)
         sheet.write(16, 20, self.minimum_gap_value)
@@ -516,14 +523,18 @@ class Image:
         with open(self.animal_number[8:] + ".csv", "w") as file:
             file.write("Frame Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , IPL/INL/OPL/ONL/IS (um), Number of Readings, , OS/RPE (um), Number of Readings,\n")
             for x in range(0, listEnd, 1):
+                outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 2)
+                wtop    = round(self.white_top_list[x]* self.newton_meter_conversion, 2)  
+                indist  = round(self.inner_distance_list[x]* self.newton_meter_conversion, 2)
+                wbot    = round(self.white_bot_list[x]* self.newton_meter_conversion, 2)
                 frame_num       = str(self.frame_list[x])                            # Frame Number            Measurements:
-                out_dist        = str(self.outer_distance_list[x] * self.newton_meter_conversion)                   # Retinal Thicness
+                out_dist        = str(outdist)                  # Retinal Thicness
                 out_dist_number = str(self.outer_distance_measurement_number[x])     # Number of Measurements
-                wt_top          = str(self.white_top_list[x] * self.newton_meter_conversion)                        # NFL to GLC
+                wt_top          = str(wtop)                       # NFL to GLC
                 wt_top_number   = str(self.white_top_measurement_number[x])          # Number of Measurements
-                wt_bot          = str(self.white_bot_list[x] * self.newton_meter_conversion)                        # ONL to Post
+                wt_bot          = str(wbot)                       # ONL to Post
                 wt_bot_number   = str(self.white_bot_measurement_number[x])          # Number of Measurements
-                in_dist         = str(self.inner_distance_list[x] * self.newton_meter_conversion)                   # GLC to ONL
+                in_dist         = str(indist)                  # GLC to ONL
                 in_dist_number  = str(self.inner_distance_measurement_number[x])     # Number of Measurements
                 seperator = ","
                 blank = " "
@@ -532,7 +543,7 @@ class Image:
                 file.write(x + "\n")
             file.write("\n")
             file.write("Specimen, ,NFL/GLC Volume Percentage, ,IPL/INL/OPL/ONL/IS Volume Percentage, ,OS/RPE Volume Percentage\n")
-            line = self.animal_number + ", ," + str(self.white_top_per) + ", ," + str(self.inner_distance_per) + ", ," + str(self.white_bot_per) + "\n"
+            line = self.animal_number + ", ," + str(round(self.white_top_per, 2)) + ", ," + str(round(self.inner_distance_per,2)) + ", ," + str(round(self.white_bot_per, 2)) + "\n"
             file.write(line)
             file.write("\n")
             file.write("White Value Threshold, , Minimum Gap Threshold, , Maximum Gap Threshold, , Mimimum Thickness Value\n")

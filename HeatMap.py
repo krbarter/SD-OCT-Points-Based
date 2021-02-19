@@ -71,7 +71,7 @@ class HeatMap:
         #spplying the color values
         for line in self.retinal_array:
             line_in = []
-            for x in line[::-1]:
+            for x in line:
                 if (x >= len(color_gradient)):
                     line_in.append([105,0,0])
                 elif (x < 0):
