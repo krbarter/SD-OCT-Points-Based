@@ -9,8 +9,9 @@ from matplotlib.pyplot import figure
 figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
 
 class HeatMap:
-    def __init__(self, retinal_thickness, name, frame, heat):
+    def __init__(self, retinal_thickness, name, frame, heat, retinal_thickness_gaps):
         self.retinal_thickness = retinal_thickness
+        self.retinal_thickness_gaps = retinal_thickness_gaps
         self.name = name
         self.frame_title = "Frame " + str(frame[0]) + "-" + str(frame[-1])
         self.frame = frame
@@ -19,7 +20,7 @@ class HeatMap:
         self.color_key = []
         self.minR = 0
         self.maxR = 0
-        self.pixel_width = 9 #standard = 4
+        self.pixel_width = 10 #standard = 4
         self.file_name = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         self.image_saved = False
         self.heat = heat
@@ -45,10 +46,13 @@ class HeatMap:
 
         print(), print("MINUMUM VALUE: ", new_min)
         
-        for x in self.retinal_thickness:
+        for x in self.retinal_thickness_gaps:
             img = []
             for y in x:
-                img.append(y - new_min)   # 155 OS 00014 = 113 for the minumin value for comparison // new_min
+                if y  != "B":
+                    img.append(int(y) - new_min)   # 155 OS 00014 = 113 for the minumin value for comparison // new_min
+                else:
+                    img.append(y)
             self.retinal_array.append(img)
 
         color_gradient = [[0,100,250], [0,95,235], [0,90,255], [0,85,212], [0,80,199], [0,75,186],
@@ -72,7 +76,9 @@ class HeatMap:
         for line in self.retinal_array:
             line_in = []
             for x in line:
-                if (x >= len(color_gradient)):
+                if x == "B":
+                    line_in.append([0,0,0])
+                elif (x >= len(color_gradient)):
                     line_in.append([105,0,0])
                 elif (x < 0):
                     line_in.append([0,100,250])
@@ -83,6 +89,11 @@ class HeatMap:
             for x in range(self.pixel_width):
                 self.retinal_gradient.append(line_in)       
             #image gradient key
+
+        for x in self.retinal_gradient:
+            if np.all(x == x[0]):
+                self.retinal_gradient.remove(x)
+
 
    
     # Adding padding to the front and end of each image to keep the shape
@@ -146,9 +157,7 @@ class HeatMap:
         cv2.putText(blank_image, "Min",(250, len(self.retinal_gradient) - 15), font, 1,(255,255,255),1,cv2.LINE_AA)
         cv2.putText(blank_image, "Max",(685, len(self.retinal_gradient) - 15), font, 1,(255,255,255),1,cv2.LINE_AA)
 
-        dim = (1000, 1000)
-        resized = cv2.resize(blank_image, dim, interpolation = cv2.INTER_AREA)
-        cv2.imwrite(self.file_name + ".tiff", resized)
+        cv2.imwrite(self.file_name + ".tiff", blank_image)
         print(self.file_name + ".tiff")
         self.image_saved = True #saves the image in the current directory
         #cv2.imshow("Retinal Heatmap", blank_image)
@@ -164,5 +173,6 @@ class HeatMap:
 
 if __name__ == "__main__":
     retinal_thickness = [[45, 23], [23, 12], [12]]
-    retinalMap = HeatMap(retinal_thickness, "Some", [40, 40], "A")
+    retinal_thickness_g = [[45, "B", 23], [23, 12], [12]]
+    retinalMap = HeatMap(retinal_thickness, "Some", [40, 40], "A", retinal_thickness_g)
     retinalMap.sceduler()

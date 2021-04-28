@@ -1,4 +1,4 @@
-""" © 2019-2020 Kent Barter All Rights Reserved """
+""" © 2019-2021 Kent Barter All Rights Reserved """
 import os
 import cv2
 import xlwt
@@ -12,19 +12,23 @@ from matplotlib import pyplot as plt
 from matplotlib.pyplot import figure
 from matplotlib.pyplot import Axes
 figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
-from Project import Directory # file imports
 from HeatMap import HeatMap
-from HeatMapH import HeatMapH
-from Settings import Settings
 
 class Image:
-    def __init__(self, img_List):
+    def __init__(self, img_List, s_image_number, e_image_number, white_value_threshold, minimum_gap_value, maximum_gap_value, min_gap_value, storage_type, heatmap_setting, smoothingline_setting, testing):
         self.img_List = img_List
-
-        # retreving the setting from the settings file
-        f = "settings.txt"
-        s = Settings(f)
-        self.s = s.retriveSettings()
+        self.start    = s_image_number
+        self.stop     = e_image_number
+        
+        #SETTINGS // THRESHOLDING VARIBLES
+        self.white_value_threshold = white_value_threshold      #Standard Value -> 110  ==> [IF THE OTHER VALUE IS NOT USED]
+        self.minimum_gap_value     = minimum_gap_value          #Standard Value -> -35
+        self.maximum_gap_value     = maximum_gap_value          #Standard Value -> -150
+        self.min_gap_value         = min_gap_value              #Standard Value -> 4
+        self.storage_type          = storage_type
+        self.heatmap_setting       = heatmap_setting
+        self.smoothingline_setting = smoothingline_setting
+        self.testing = testing
         
         #layers
         self.outer_distance_list = []
@@ -34,13 +38,14 @@ class Image:
         self.white_bot_list      = []
         self.inner_distance_list = []
 
-        # new heatmap
+        # New heatmap
         self.outer_distance_gaps = []
         for x in range(0, 100):
             l = []
             for y in range(0, 1000):
                 l.append("B")
             self.outer_distance_gaps.append(l)
+
 
         # getting the number of points measured for each frame
         self.outer_distance_measurement_number = []
@@ -51,31 +56,16 @@ class Image:
         self.inner_distance_measurement_number = []
         
         #thinkness
-        self.retinal_thickness   = []
-
-        #getting the image points for heatmap2 (move heatmap points to set methods / each point should be unique)
-        self.top_points = []
-        self.top_white  = []
-        self.mid_points = []
-        self.bot_white  = []
-        self.bot_points = []
+        self.retinal_thickness      = []
+        self.retinal_thickness_gaps = []
         
         #start and stop / frame information
-        self.start = int(self.s[0])
-        self.stop  = int(self.s[1])
         self.number_of_images = self.stop - self.start
         self.frame_list = []
 
         #BOUNDS SETTINGS
         self.end_bound_list = []                         # list that contains the end bouds (4) // if length = 0 no bounds set
         self.white_value_threshold_list = [102, 99]      # first value -> main | second value -> secondary[end boundaries]
-
-        #SETTINGS // THRESHOLDING VARIBLES
-        self.image_set_number      = int(self.s[2])
-        self.white_value_threshold = int(self.s[3])       #Standard Value -> 110  ==> [IF THE OTHER VALUE IS NOT USED]
-        self.minimum_gap_value     = int(self.s[4])       #Standard Value -> -35
-        self.maximum_gap_value     = int(self.s[5])       #Standard Value -> -150
-        self.min_gap_value         = int(self.s[6])       #Standard Value -> 4
 
         # ALL MEASUREMENT ARE IN MICROMETERS (1 pixel * 1.62) // set to one for measurment in pixels
         self.newton_meter_conversion = 1.62      
@@ -111,39 +101,23 @@ class Image:
     def getRetinalThickness(self):
         return self.retinal_thickness
 
-    #RETURING IMAGE DATA
-    def getTopPoints(self):
-        return self.top_points
-
-    def getTopWhite(self):
-        return self.top_white
-
-    def getMidPoints(self):
-        return self.mid_points
-
     def getRetinalThicknessGaps(self):
         return self.outer_distance_gaps
 
-    def getBotWhite(self):
-        return self.bot_white
-
-    def getBotPoints(self):
-        return self.bot_points
-
+    #RETURING IMAGE DATA
     def getName(self):
-        return self.name
+        return self.animal_number
 
     def getFrameList(self):
         return self.frame_list
 
     def getHeat(self):
-        return self.s[8]
+        return self.heatmap_setting
 
     def Scheduler(self):
         for x in range(self.start, self.stop):
-            currentImage = self.img_List[self.image_set_number][x]
-            self.animal_number = currentImage[5:-10]
-            print(currentImage)
+            currentImage = self.img_List[x]
+            self.animal_number = currentImage[-42:-5]
             img = Image.prepareImage(self, currentImage)
 
             if Image.TestImage(self, img) == True:
@@ -154,7 +128,7 @@ class Image:
                         self.white_value_threshold = self.white_value_threshold_list[1]  # won't return to orginal value
                     else:
                         self.white_value_threshold = self.white_value_threshold_list[0]
-                Image.medianDerterminant(self, img, self.s[9], x)
+                Image.medianDerterminant(self, img, self.smoothingline_setting, x)
             else:
                 print("This Image has an error if type: ")
 
@@ -163,9 +137,9 @@ class Image:
         #print(self.retinal_thickness)
         
         """Data Storage"""
-        if int(self.s[7]) == 1:  Image.StoreDataClassic(self)
-        if int(self.s[7]) == 2:  Image.StoreDataModern(self)
-        if int(self.s[7]) == 3:  Image.StoreCommaSeperatedValues(self)
+        if self.storage_type == "Classic":  Image.StoreDataClassic(self)
+        if self.storage_type == "Modern":   Image.StoreDataModern(self)
+        if self.storage_type == "CSV":      Image.StoreCommaSeperatedValues(self)
         cv2.destroyAllWindows()
 
     def TestImage(self, mat_img):
@@ -174,9 +148,9 @@ class Image:
         hist_sum_Blank = sum(histr[100:125])
         error = True
 
-        if hist_sum_Pixel < 800000:
-            error = False
-            print("Pixelation Error")
+        #if hist_sum_Pixel < 800000:
+            #error = False
+            #print("Pixelation Error")
 
         if hist_sum_Blank < 9000:
             print("Blank Error")
@@ -192,29 +166,6 @@ class Image:
         mat_img = cv2.medianBlur(mat_img,5)  # stsandard value - 5
         ret,mat_img = cv2.threshold(mat_img,127,255,cv2.THRESH_TRUNC)
         return mat_img
-        
-    def intDisplay(self, image):
-        #Display matplot can when (Pillow is a requirement)
-        plt.subplot(121),plt.imshow(image,cmap = 'gray')
-        plt.title('Image'), plt.xticks([]), plt.yticks([])
-        plt.subplot(122),plt.hist(image.ravel(),256,[0,256])
-        plt.title('Histogram'), plt.xticks([]), plt.yticks([])
-        plt.show(), plt.close(fig = None)
-        
-    def pointDetector(self, img):
-        """finding critical points, to be mapped"""
-        #finding as mant points as possible
-        feature_points = []
-        edges = cv2.Canny(img,12,200, 20) #image,min,max,apeture
-        plt.imshow(edges,cmap = 'gray'), plt.show()
-        
-        #indeces and points
-        indices = np.where(edges != [0])
-        coordinates = zip(indices[0], indices[1])
-        for x in coordinates:
-            feature_points.append(x)
-        print("Number of Points: ", len(feature_points))
-        return feature_points
 
     #band detection to save on computing time
     def medianDerterminant(self, image, sl, currentImage):
@@ -226,7 +177,10 @@ class Image:
         white_top          = []
         inner_distance     = []
 
+        height, width, depth = image.shape
+
         smooth = image.copy()
+
 
         #setting the points for the heatmap image
         image_bot       = []
@@ -234,14 +188,15 @@ class Image:
         image_mid       = []
         image_white_bot = []
         image_top       = []
+                
 
-        for pointx in range(0, 1000):
+        for pointx in range(0, 1000): #1000
             midpath  = []
             midwhite = []
             top      = []
             bot      = []
 
-            for y in range(0,500): #RESTRICTING THE BOTTOM RANGE 1024 total
+            for y in range(0,500): #RESTRICTING THE BOTTOM RANGE 1024 total  #
                  color = image[y, pointx]
                  midpath.append([y, color[0]])
                  
@@ -260,9 +215,8 @@ class Image:
                     bot = midwhite[x+1:]
                     medianPoint = top[-1] - round((top[-1] - bot[0]) / 2)
                     value_to_print += 1
+                    
 
-                    if self.last_top_value == 0:
-                        self.last_top_value = bot[-1] - top[0]
 
                     #getting down to pixel higlighting to get perpixel measurements
                     # if (top[-1] - top[0] >= self.min_gap_value and bot[-1] - bot[0] >= self.min_gap_value and top[0] != 0 and self.last_top_value - (bot[-1] - top[0]) >= -10)
@@ -323,7 +277,10 @@ class Image:
 
                     # shows the image  // turn off to speed up processing
                     self.last_top_value = bot[-1] - top[0]
-                    #cv2.imshow("ImageK By: Kent Barter", image)
+
+            if self.testing == True:
+                cv2.imshow("ImageK By: Kent Barter", image)
+                cv2.waitKey(1)
 
         #saving the image to the image  (priting whne the image has been complete)
         image_scale = cv2.cvtColor(image,cv2.COLOR_RGB2BGR) # moving from cv2's BRG mode
@@ -331,23 +288,15 @@ class Image:
         #path = "C:\\Users\\krbar\\Desktop\\Project\\Images"
         path = "Images"
         #name = time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
-        self.name = self.animal_number[8:]
-        name = self.animal_number[8:] + "  " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
+        self.name = self.animal_number
+        name = strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
         mpimg.imsave(os.path.join(path , name), image_crop)
 
-        if sl == "s":
+        if sl == "On":
             image_s = cv2.cvtColor(smooth,cv2.COLOR_RGB2BGR)
             path = "SmoothingLine"
-            self.name = self.animal_number[8:]
-            name = self.animal_number[8:] + "  " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
+            name = self.animal_number + " " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
             mpimg.imsave(os.path.join(path , name), image_s)
-
-        #getting the heatmap points for each image
-        self.top_points.append(image_top)
-        self.top_white.append(image_white_top)
-        self.mid_points.append(image_mid)
-        self.bot_white.append(image_white_bot)
-        self.bot_points.append(image_bot)
                     
         #the avarge values of thickness of each layery
         if len(outer_distance) > 1: outer_distance_avg = statistics.mean(outer_distance)
@@ -369,12 +318,12 @@ class Image:
         else: inner_distance_avg = 0
 
         #getting the volume of each layer (to get the (percentage of each layer)
-        outer_distance_volume = sum(outer_distance)
-        white_top_volume = sum(white_top)
-        mid_top_volume = sum(mid_top_distance)
-        mid_bot_volume = sum(mid_bot_distance)
-        white_bot_volume = sum(white_bot)
-        inner_distance_volume = sum(inner_distance)
+        outer_distance_volume    = sum(outer_distance)
+        white_top_volume         = sum(white_top)
+        mid_top_volume           = sum(mid_top_distance)
+        mid_bot_volume           = sum(mid_bot_distance)
+        white_bot_volume         = sum(white_bot)
+        inner_distance_volume    = sum(inner_distance)
 
         # getting the number of meaurements of each average
         self.outer_distance_measurement_number.append(len(outer_distance))
@@ -410,15 +359,14 @@ class Image:
         #print("NFL to GLC: ", white_top),             print( "NFL to GLC  Distance Avarage: ",   white_top_avg),      print()
         #print("ONL to Post: ", white_bot),            print( "ONL to Post Distance Avarage: ",   white_bot_avg),      print()
 
-        print("Volume and Percentage")
-        print("Total Volume: ",      outer_distance_volume), print()
-        print("NFL to GLC Volume: ",      white_top_volume), print("NFL/GLC Volume Percentage: ",      self.white_top_per), print()
-        print("ONL to RPE Volume: ",     white_bot_volume), print("ONL to RPE Volume Percentage: ",     self.white_bot_per), print()
-        print("GLC to ONL Volume: ", inner_distance_volume), print("GLC to ONL Volume Percentage: ", self.inner_distance_per), print()
-        #print("Animal Number: ", self.animal_number), print(self.frame_list)
+        #print("Volume and Percentage")
+        #print("Total Volume: ",      outer_distance_volume), print()
+        #print("NFL to GLC Volume: ",      white_top_volume), print("NFL/GLC Volume Percentage: ",      self.white_top_per), print()
+        #print("ONL to RPE Volume: ",     white_bot_volume), print("ONL to RPE Volume Percentage: ",     self.white_bot_per), print()
+        #print("GLC to ONL Volume: ", inner_distance_volume), print("GLC to ONL Volume Percentage: ", self.inner_distance_per), print()
+        print("Animal Number: ", self.animal_number)
         
         # at the end of the computation send the value of self.outer_distance_list to the heatmap
-        cv2.waitKey(1)
         
     """Data Storage methods"""
     def StoreDataClassic(self): #xls format
@@ -473,11 +421,11 @@ class Image:
         sheet.write(22, 20, self.min_gap_value)
         
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
-        wb.save(self.animal_number[8:] + ".xls")
+        wb.save(self.animal_number + ".xls")
         
     def StoreDataModern(self): #xlsx format
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
-        workbook = xlsxwriter.Workbook((self.animal_number[8:] + " " + time_current + ".xlsx"))
+        workbook = xlsxwriter.Workbook((time_current + ".xlsx"))
         sheet = workbook.add_worksheet()
         style = workbook.add_format({'bold': True})
 
@@ -532,7 +480,7 @@ class Image:
     def StoreCommaSeperatedValues(self): #csv format
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         listEnd = len(self.outer_distance_list)
-        with open(self.animal_number[8:] + ".csv", "w") as file:
+        with open(self.animal_number + ".csv", "w") as file:
             file.write("Frame Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , IPL/INL/OPL/ONL/IS (um), Number of Readings, , OS/RPE (um), Number of Readings,\n")
             for x in range(0, listEnd, 1):
                 outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 2)
@@ -562,35 +510,3 @@ class Image:
             line2 = str(self.white_value_threshold) + ", ," + str(self.minimum_gap_value) + ", ," + str(self.maximum_gap_value) + ", ," + str(self.min_gap_value) + "\n"
             file.write(line2)
         file.close()
-
-# directory.openDirectory() = img_list
-def __main__():
-    #directory_name = str(input("Enter the name of the working directory: "))
-    directory = Directory("Data")
-    image = Image(directory.openDirectory())
-    image.Scheduler()
-
-    #creating the retinal heatmap (and the location list)
-    retinal_thickness = image.getRetinalThickness()
-    name = image.getName()
-    frame = image.getFrameList()
-    heat = image.getHeat()
-    gaps = image.getRetinalThicknessGaps()
-    retinalMap = HeatMap(retinal_thickness, name, frame, heat, gaps)
-    retinalMap.sceduler()
-
-    #creating retinal heatmap2
-    #top_points = image.getTopPoints()
-    #top_white = image.getTopWhite()
-    #mid_points = image.getMidPoints()
-    #bot_white = image.getBotWhite()
-    #bot_points = image.getBotPoints()
-    #heatmap = HeatMapH(top_points, top_white, mid_points, bot_white, bot_points)
-    #heatmap.sceduler()
-
-    #showing the heatmap image  (Not using the image display section to complete the analysis)
-    #if (retinalMap.getIsSaved() == True):
-    #    image_location = ImageDisplay(directory.openDirectory(), retinalMap.getPixelWidth(), image.getNumberOfImages(), retinalMap.getfile_name())
-    #    image_location.pixel_location()
-    #    image_location.showImg()
-__main__()

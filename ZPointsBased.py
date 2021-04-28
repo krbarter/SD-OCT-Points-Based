@@ -33,6 +33,14 @@ class Image:
         self.white_bot_list      = []
         self.inner_distance_list = []
 
+        # new heatmap
+        self.outer_distance_gaps = []
+        for x in range(0, 100):
+            l = []
+            for y in range(0, 950):
+                l.append("B")
+            self.outer_distance_gaps.append(l)
+
         # getting the number of points measured for each frame
         self.outer_distance_measurement_number = []
         self.white_top_measurement_number      = []
@@ -112,6 +120,9 @@ class Image:
     def getMidPoints(self):
         return self.mid_points
 
+    def getRetinalThicknessGaps(self):
+        return self.outer_distance_gaps
+
     def getBotWhite(self):
         return self.bot_white
 
@@ -141,7 +152,7 @@ class Image:
                         self.white_value_threshold = self.white_value_threshold_list[1]  # won't return to orginal value
                     else:
                         self.white_value_threshold = self.white_value_threshold_list[0]
-                Image.medianDerterminant(self, img)
+                Image.medianDerterminant(self, img, x)
             else:
                 print("This Image has an error if type: ")
 
@@ -163,10 +174,6 @@ class Image:
         hist_sum_Pixel = sum(histr[50:100])
         hist_sum_Blank = sum(histr[100:125])
         error = True
-
-        if hist_sum_Pixel < 800000:
-            error = False
-            print("Pixelation Error")
 
         if hist_sum_Blank < 9000:
             print("Blank Error")
@@ -207,7 +214,7 @@ class Image:
         return feature_points
 
     #band detection to save on computing time
-    def medianDerterminant(self, image):
+    def medianDerterminant(self, image, currentImage):
         outer_distance     = []
         white_top_distance = []
         mid_top_distance   = []
@@ -223,13 +230,13 @@ class Image:
         image_white_bot = []
         image_top       = []
         
-        for pointx in range(0, 1000):
+        for pointx in range(0, 950):
             midpath  = []
             midwhite = []
             top      = []
             bot      = []
 
-            for y in range(5,700): #RESTRICTING THE BOTTOM RANGE 1024 total
+            for y in range(0,288): #RESTRICTING THE BOTTOM RANGE 1024 total
                  color = image[y, pointx]
                  midpath.append([y, color[0]])
                  
@@ -257,7 +264,8 @@ class Image:
                     #total width of the retina
                     total_width = midwhite[-1] - midwhite[0]
                     if total_width >= self.min_gap_value and midwhite[0] != 0:
-                            outer_distance.append(total_width)
+                        outer_distance.append(total_width)
+                        self.outer_distance_gaps[currentImage][pointx] = total_width
 
                     #top white area of the retina
                     top_white_width = midwhite[x] - midwhite[0]
@@ -512,12 +520,13 @@ def __main__():
     image.Scheduler()
 
     #creating the retinal heatmap (and the location list)
-    #retinal_thickness = image.getRetinalThickness()
-    #name = image.getName()
-    #frame = image.getFrameList()
-    #heat = image.getHeat()
-    #retinalMap = HeatMap(retinal_thickness, name, frame, heat)
-    #retinalMap.sceduler()
+    retinal_thickness = image.getRetinalThickness()
+    name = image.getName()
+    frame = image.getFrameList()
+    heat = image.getHeat()
+    gaps = image.getRetinalThicknessGaps()
+    retinalMap = HeatMap(retinal_thickness, name, frame, heat, gaps)
+    retinalMap.sceduler()
 
     #creating retinal heatmap2
     #top_points = image.getTopPoints()

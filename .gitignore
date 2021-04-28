@@ -1,3 +1,6 @@
 /Data
 /Images
 /SmoothingLine
+settings.txt
+*.csv
+*.xlxs
