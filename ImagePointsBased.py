@@ -331,15 +331,14 @@ class Image:
         #path = "C:\\Users\\krbar\\Desktop\\Project\\Images"
         path = "Images"
         #name = time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
-        self.name = self.animal_number[8:]
-        name = self.animal_number[8:] + "  " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
+        name_start = self.animal_number.split("\\")[-1]
+        name = name_start + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
         mpimg.imsave(os.path.join(path , name), image_crop)
 
         if sl == "s":
             image_s = cv2.cvtColor(smooth,cv2.COLOR_RGB2BGR)
             path = "SmoothingLine"
-            self.name = self.animal_number[8:]
-            name = self.animal_number[8:] + "  " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
+            name = name_start + "  " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
             mpimg.imsave(os.path.join(path , name), image_s)
 
         #getting the heatmap points for each image
@@ -473,11 +472,13 @@ class Image:
         sheet.write(22, 20, self.min_gap_value)
         
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
-        wb.save(self.animal_number[8:] + ".xls")
+        name_start = self.animal_number.split("\\")[-2]
+        wb.save(name_start + " " + time_current + ".xls")
         
     def StoreDataModern(self): #xlsx format
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
-        workbook = xlsxwriter.Workbook((self.animal_number[8:] + " " + time_current + ".xlsx"))
+        name_start = self.animal_number.split("\\")[-2]
+        workbook = xlsxwriter.Workbook((name_start + " " + time_current + ".xlsx"))
         sheet = workbook.add_worksheet()
         style = workbook.add_format({'bold': True})
 
@@ -531,8 +532,9 @@ class Image:
 
     def StoreCommaSeperatedValues(self): #csv format
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
+        name_start = self.animal_number.split("\\")[-2]
         listEnd = len(self.outer_distance_list)
-        with open(self.animal_number[8:] + ".csv", "w") as file:
+        with open(name_start + " " + time_current + ".csv", "w") as file:
             file.write("Frame Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , IPL/INL/OPL/ONL/IS (um), Number of Readings, , OS/RPE (um), Number of Readings,\n")
             for x in range(0, listEnd, 1):
                 outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 2)
