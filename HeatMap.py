@@ -40,17 +40,17 @@ class HeatMap:
         self.maxR = np.amax(self.retinal_thickness)
 
         if self.heat == "A" or self.heat == "a":
-            new_min = np.amin(self.maxR)
+            self.new_min = np.amin(self.maxR)
         else:
-            new_min = int(self.heat)
+            self.new_min = int(self.heat)
 
-        print(), print("MINUMUM VALUE: ", new_min)
+        print(), print("MINUMUM VALUE: ", self.new_min)
         
         for x in self.retinal_thickness_gaps:
             img = []
             for y in x:
                 if y  != "B":
-                    img.append(int(y) - new_min)   # 155 OS 00014 = 113 for the minumin value for comparison // new_min
+                    img.append(int(y) - self.new_min)   # 155 OS 00014 = 113 for the minumin value for comparison // new_min
                 else:
                     img.append(y)
             self.retinal_array.append(img)
@@ -157,7 +157,7 @@ class HeatMap:
         cv2.putText(blank_image, "Min",(250, len(self.retinal_gradient) - 15), font, 1,(255,255,255),1,cv2.LINE_AA)
         cv2.putText(blank_image, "Max",(685, len(self.retinal_gradient) - 15), font, 1,(255,255,255),1,cv2.LINE_AA)
 
-        cv2.imwrite(self.file_name + ".tiff", blank_image)
+        cv2.imwrite(str(self.new_min) + " " + self.file_name + ".tiff", blank_image)
         print(self.file_name + ".tiff")
         self.image_saved = True #saves the image in the current directory
         #cv2.imshow("Retinal Heatmap", blank_image)
