@@ -292,8 +292,8 @@ class Image:
         #path = "C:\\Users\\krbar\\Desktop\\Project\\Images"
         path = "Images"
         #name = time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
-        self.name = self.animal_number.split("\\")[-2]
-        name_start = self.animal_number.split("\\")[-2]
+        self.name = self.animal_number.split("\\")[-1]
+        name_start = self.animal_number.split("\\")[-1]
         name = name_start + "  " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
         mpimg.imsave(os.path.join(path , name), image_crop)
         #getting the heatmap points for each image
@@ -373,7 +373,7 @@ class Image:
     def StoreDataClassic(self): #xls format
         wb = xlwt.Workbook(encoding="utf-8")
         sheet = wb.add_sheet('SD-OST')
-        style = xlwt.easyxf('font: bold 1') 
+        style = xlwt.easyxf('font: bold 1')
 
         sheet.write(0, 0, "Frame Number", style)
         sheet.write(0, 2, "Retinal Thickness (um)" , style)
@@ -384,7 +384,6 @@ class Image:
         sheet.write(0, 11, "Number of Readings", style)
         sheet.write(0, 14, "OPL/ONL/IS/OS/RPE (um)" , style)
         sheet.write(0, 15, "Number of Readings", style)
-
 
         #volumes percentages
         sheet.write(0,  20, "Specimen", style)
@@ -398,10 +397,10 @@ class Image:
         
         listEnd = len(self.outer_distance_list)
         for x in range(0, listEnd):
-            outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 2)
-            wtop    = round(self.white_top_list[x]* self.newton_meter_conversion, 2)  
-            indist  = round(self.inner_distance_list[x]* self.newton_meter_conversion, 2)
-            wbot    = round(self.white_bot_list[x]* self.newton_meter_conversion, 2)
+            outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 1)
+            wtop    = round(self.white_top_list[x]* self.newton_meter_conversion, 1)  
+            indist  = round(self.inner_distance_list[x]* self.newton_meter_conversion, 1)
+            wbot    = round(self.white_bot_list[x]* self.newton_meter_conversion, 1)
             sheet.write(x + 1, 0,  self.frame_list[x])                         # Frame Number                Messurments:
             sheet.write(x + 1, 2,  outdist)                                    # Retinal Thicness
             sheet.write(x + 1, 3,  self.outer_distance_measurement_number[x])  # Number of Measurements
@@ -413,9 +412,9 @@ class Image:
             sheet.write(x + 1, 15, self.white_bot_measurement_number[x])
         #end values
         sheet.write(1,  20, self.animal_number)
-        sheet.write(4,  20, round(self.white_top_per, 2))
-        sheet.write(7,  20, round(self.inner_distance_per, 2))
-        sheet.write(10, 20, round(self.white_bot_per, 2))
+        sheet.write(4,  20, round(self.white_top_per, 1))
+        sheet.write(7,  20, round(self.inner_distance_per, 1))
+        sheet.write(10, 20, round(self.white_bot_per, 1))
         #settings varibles
         sheet.write(13, 20, self.white_value_threshold)
         sheet.write(16, 20, self.minimum_gap_value)
@@ -423,12 +422,12 @@ class Image:
         sheet.write(22, 20, self.min_gap_value)
         
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
-        name_start = self.animal_number.split("\\")[-2]
+        name_start = self.animal_number.split("\\")[-1]
         wb.save(name_start + " " + time_current + ".xls")
         
     def StoreDataModern(self): #xlsx format
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
-        name_start = self.animal_number.split("\\")[-2]
+        name_start = self.animal_number.split("\\")[-1]
         workbook = xlsxwriter.Workbook((name_start + " " + time_current + ".xlsx"))
         sheet = workbook.add_worksheet()
         style = workbook.add_format({'bold': True})
@@ -443,7 +442,6 @@ class Image:
         sheet.write(0, 14, "OPL/ONL/IS/OS/RPE (um)" , style)
         sheet.write(0, 15, "Number of Readings", style)
 
-
         #volumes percentages
         sheet.write(0,  20, "Specimen", style)
         sheet.write(3,  20, "NFL/GLC Volume Percentage", style)
@@ -456,10 +454,10 @@ class Image:
         
         listEnd = len(self.outer_distance_list)
         for x in range(0, listEnd):
-            outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 2)
-            wtop    = round(self.white_top_list[x]* self.newton_meter_conversion, 2)  
-            indist  = round(self.inner_distance_list[x]* self.newton_meter_conversion, 2)
-            wbot    = round(self.white_bot_list[x]* self.newton_meter_conversion, 2)
+            outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 1)
+            wtop    = round(self.white_top_list[x]* self.newton_meter_conversion, 1)  
+            indist  = round(self.inner_distance_list[x]* self.newton_meter_conversion, 1)
+            wbot    = round(self.white_bot_list[x]* self.newton_meter_conversion, 1)
             sheet.write(x + 1, 0,  self.frame_list[x])                         # Frame Number                Messurments:
             sheet.write(x + 1, 2,  outdist)                                    # Retinal Thicness
             sheet.write(x + 1, 3,  self.outer_distance_measurement_number[x])  # Number of Measurements
@@ -471,9 +469,9 @@ class Image:
             sheet.write(x + 1, 15, self.white_bot_measurement_number[x])
         #end values
         sheet.write(1,  20, self.animal_number)
-        sheet.write(4,  20, round(self.white_top_per, 2))
-        sheet.write(7,  20, round(self.inner_distance_per, 2))
-        sheet.write(10, 20, round(self.white_bot_per, 2))
+        sheet.write(4,  20, round(self.white_top_per, 1))
+        sheet.write(7,  20, round(self.inner_distance_per, 1))
+        sheet.write(10, 20, round(self.white_bot_per, 1))
         #settings varibles
         sheet.write(13, 20, self.white_value_threshold)
         sheet.write(16, 20, self.minimum_gap_value)
@@ -484,14 +482,14 @@ class Image:
     def StoreCommaSeperatedValues(self): #csv format
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         listEnd = len(self.outer_distance_list)
-        name_start = self.animal_number.split("\\")[-2]
+        name_start = self.animal_number.split("\\")[-1]
         with open(name_start + "" + time_current + ".csv", "w") as file:
             file.write("Frame Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , IPL/INL (um), Number of Readings, , OPL/ONL/IS/OS/RPE (um), Number of Readings,\n")
             for x in range(0, listEnd, 1):
-                outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 2)
-                wtop    = round(self.white_top_list[x]* self.newton_meter_conversion, 2)  
-                indist  = round(self.inner_distance_list[x]* self.newton_meter_conversion, 2)
-                wbot    = round(self.white_bot_list[x]* self.newton_meter_conversion, 2)
+                outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 1)
+                wtop    = round(self.white_top_list[x]* self.newton_meter_conversion, 1)  
+                indist  = round(self.inner_distance_list[x]* self.newton_meter_conversion, 1)
+                wbot    = round(self.white_bot_list[x]* self.newton_meter_conversion, 1)
                 frame_num       = str(self.frame_list[x])                            # Frame Number            Measurements:
                 out_dist        = str(outdist)                   # Retinal Thicness
                 out_dist_number = str(self.outer_distance_measurement_number[x])     # Number of Measurements
@@ -508,7 +506,7 @@ class Image:
                 file.write(x + "\n")
             file.write("\n")
             file.write("Specimen, ,NFL/GLC Volume Percentage, ,IPL/INL/OPL/ONL/IS Volume Percentage, ,OS/RPE Volume Percentage\n")
-            line = self.animal_number + ", ," + str(round(self.white_top_per,2)) + ", ," + str(round(self.inner_distance_per,2)) + ", ," + str(round(self.white_bot_per,2)) + "\n"
+            line = self.animal_number + ", ," + str(round(self.white_top_per,1)) + ", ," + str(round(self.inner_distance_per,1)) + ", ," + str(round(self.white_bot_per,1)) + "\n"
             file.write(line)
             file.write("\n")
             file.write("White Value Threshold, , Minimum Gap Threshold, , Maximum Gap Threshold, , Mimimum Thickness Value\n")
