@@ -21,6 +21,6 @@ class Directory:
             if os.path.isdir(x) == True:
                 for y in os.listdir(x):
                     if y.endswith(".TIFF"):
-                        imgs.append(x + "/" + y)
+                        imgs.append(x + str(os.sep) + y)
             self.img_input.append(imgs)
         return self.img_input

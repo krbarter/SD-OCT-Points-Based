@@ -13,7 +13,8 @@ class HeatMap:
         self.retinal_thickness = retinal_thickness
         self.retinal_thickness_gaps = retinal_thickness_gaps
         self.name = name
-        self.frame_title = "Frame " + str(frame[0]) + "-" + str(frame[-1])
+        if frame.length > 2: self.frame_title = "Frame " + str(frame[0]) + "-" + str(frame[-1]) 
+        else: self.frame_title = ""
         self.frame = frame
         self.retinal_array = []
         self.retinal_gradient = []

@@ -89,7 +89,7 @@ class MyPanel(wx.Panel):
             if os.path.isdir(dirname):
                 for y in os.listdir(dirname):
                     if y.endswith(".TIFF"):
-                        self.imgs.append(dirname + "\\" + y)
+                        self.imgs.append(dirname + os.sep + y)
 
             if len(self.imgs) >= 2:
                 toshow = round(len(self.imgs) / 2)

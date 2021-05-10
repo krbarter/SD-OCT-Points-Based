@@ -290,7 +290,7 @@ class Image:
         #path = "C:\\Users\\krbar\\Desktop\\Project\\Images"
         path = "Images"
         #name = time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
-        name_start = self.animal_number.split("\\")[-1]
+        name_start = self.animal_number.split(os.sep)[-1]
         name = name_start + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
         mpimg.imsave(os.path.join(path , name), image_crop)
 
@@ -423,12 +423,12 @@ class Image:
         sheet.write(22, 20, self.min_gap_value)
         
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
-        name_start = self.animal_number.split("\\")[-1]
+        name_start = self.animal_number.split(os.sep)[-1]
         wb.save(name_start + " " + time_current + ".xls")
         
     def StoreDataModern(self): #xlsx format
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
-        name_start = self.animal_number.split("\\")[-1]
+        name_start = self.animal_number.split(os.sep)[-1]
         workbook = xlsxwriter.Workbook((name_start + " " + time_current + ".xlsx"))
         sheet = workbook.add_worksheet()
         style = workbook.add_format({'bold': True})
@@ -483,7 +483,7 @@ class Image:
 
     def StoreCommaSeperatedValues(self): #csv format
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
-        name_start = self.animal_number.split("\\")[-1]
+        name_start = self.animal_number.split(os.sep)[-1]
         listEnd = len(self.outer_distance_list)
         with open(name_start + " " + time_current + ".csv", "w") as file:
             file.write("Frame Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , IPL/INL (um), Number of Readings, , OPL/ONL/IS/OS/RPE (um), Number of Readings,\n")
