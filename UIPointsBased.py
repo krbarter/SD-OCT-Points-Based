@@ -19,6 +19,7 @@ class Image:
         self.img_List = img_List
         self.start    = s_image_number
         self.stop     = e_image_number
+        self.name     = ""
         
         #SETTINGS // THRESHOLDING VARIBLES
         self.white_value_threshold = white_value_threshold      #Standard Value -> 110  ==> [IF THE OTHER VALUE IS NOT USED]

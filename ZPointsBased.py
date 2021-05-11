@@ -24,7 +24,8 @@ class Image:
         f = "settings.txt"
         s = Settings(f)
         self.s = s.retriveSettings()
-        
+        self.name = ""
+
         #layers
         self.outer_distance_list = []
         self.white_top_list      = []
