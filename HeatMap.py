@@ -42,6 +42,9 @@ class HeatMap:
         self.minR = np.amin(self.retinal_thickness)
         self.maxR = np.amax(self.retinal_thickness)
 
+        self.minR = 23
+        self.maxR = 123
+
         if self.heat == "A" or self.heat == "a":
             self.new_min = np.amin(self.maxR)
         else:
@@ -156,9 +159,11 @@ class HeatMap:
         
         cv2.putText(blank_image, self.name,(5, 17), font, 0.5,(255,255,255),1,cv2.LINE_AA)
         cv2.putText(blank_image, self.frame_title,(position, 17), font, 0.5,(255,255,255),1,cv2.LINE_AA)
-        
-        cv2.putText(blank_image, "Min",(250, len(self.retinal_gradient) - 15), font, 1,(255,255,255),1,cv2.LINE_AA)
-        cv2.putText(blank_image, "Max",(685, len(self.retinal_gradient) - 15), font, 1,(255,255,255),1,cv2.LINE_AA)
+
+        min_line = str(round(self.minR * 1.62)) + "um"
+        max_line = str(round(self.maxR * 1.62)) + "um"
+        cv2.putText(blank_image, min_line,(230, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)
+        cv2.putText(blank_image, max_line,(660, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)
 
         cv2.imwrite(str(self.new_min) + " " + self.file_name + ".tiff", blank_image)
         print(self.file_name + ".tiff")
