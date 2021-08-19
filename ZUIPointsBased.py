@@ -198,7 +198,7 @@ class Image:
             top      = []
             bot      = []
 
-            for y in range(0,288): #RESTRICTING THE BOTTOM RANGE 1024 total  #
+            for y in range(0,400): #RESTRICTING THE BOTTOM RANGE 1024 total  #
                  color = image[y, pointx]
                  midpath.append([y, color[0]])
                  
@@ -231,7 +231,7 @@ class Image:
                         image[top[0]][pointx] = (255,0,0,-1)     #top blue 
                         image[bot[-1]][pointx] = (255,0,0,-1)    #bot blue
 
-                        if sl == "s":
+                        if self.smoothingline_setting == "On":
                             smooth[medianPoint][pointx] = (0,0,255,-1) # red points
                             smooth[medianPoint][pointx] = (0,0,255,-1) # red points
 
@@ -294,7 +294,7 @@ class Image:
         name = name_start + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
         mpimg.imsave(os.path.join(path , name), image_crop)
 
-        if sl == "On":
+        if self.smoothingline_setting == "On":
             image_s = cv2.cvtColor(smooth,cv2.COLOR_RGB2BGR)
             path = "SmoothingLine"
             name = name_start + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"

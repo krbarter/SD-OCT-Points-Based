@@ -179,7 +179,6 @@ class Image:
         inner_distance     = []
 
         height, width, depth = image.shape
-
         smooth = image.copy()
 
 
@@ -216,8 +215,6 @@ class Image:
                     bot = midwhite[x+1:]
                     medianPoint = top[-1] - round((top[-1] - bot[0]) / 2)
                     value_to_print += 1
-                    
-
 
                     #getting down to pixel higlighting to get perpixel measurements
                     # if (top[-1] - top[0] >= self.min_gap_value and bot[-1] - bot[0] >= self.min_gap_value and top[0] != 0 and self.last_top_value - (bot[-1] - top[0]) >= -10)
@@ -226,11 +223,11 @@ class Image:
                         #image[medianPoint + 205][pointx] = (0,0,255,-1) # red points
                         #image[medianPoint + 206][pointx] = (0,0,255,-1) # red points
                         image[top[-1]][pointx] = (0,255,0,-1)    #top green
-                        image[bot[0]][pointx] = (0,255,0,-1)     #bot green
-                        image[top[0]][pointx] = (255,0,0,-1)     #top blue 
+                        image[bot[0]][pointx]  = (0,255,0,-1)    #bot green
+                        image[top[0]][pointx]  = (255,0,0,-1)    #top blue 
                         image[bot[-1]][pointx] = (255,0,0,-1)    #bot blue
 
-                        if sl == "s":
+                        if self.smoothingline_setting == "On":
                             smooth[medianPoint][pointx] = (0,0,255,-1) # red points
                             smooth[medianPoint][pointx] = (0,0,255,-1) # red points
 
@@ -293,7 +290,7 @@ class Image:
         name = self.name + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
         mpimg.imsave(os.path.join(path , name), image_crop)
 
-        if sl == "On":
+        if self.smoothingline_setting == "On":
             image_s = cv2.cvtColor(smooth,cv2.COLOR_RGB2BGR)
             path = "SmoothingLine"
             name = self.name + " " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
