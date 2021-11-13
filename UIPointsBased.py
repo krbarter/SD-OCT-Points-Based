@@ -406,6 +406,12 @@ class Image:
         sheet.write(15, 20, "Minimum Gap Threshold", style)
         sheet.write(18, 20, "Maximum Gap Threshold", style)
         sheet.write(21, 20, "Mimimum Thickness Value", style)
+
+        # width and height
+        sheet.write(24, 20, "Starting Height", style)
+        sheet.write(27, 20, "Ending Height", style)
+        sheet.write(30, 20, "Starting Width", style)
+        sheet.write(33, 20, "Ending Width", style)
         
         listEnd = len(self.outer_distance_list)
         for x in range(0, listEnd):
@@ -432,6 +438,11 @@ class Image:
         sheet.write(16, 20, self.minimum_gap_value)
         sheet.write(19, 20, self.maximum_gap_value)
         sheet.write(22, 20, self.min_gap_value)
+
+        sheet.write(25, 20, self.start_height)
+        sheet.write(28, 20, self.end_height)
+        sheet.write(31, 20, self.start_width)
+        sheet.write(34, 20, self.end_width)
         
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         name_start = self.animal_number.split(os.sep)[-1]
@@ -463,6 +474,12 @@ class Image:
         sheet.write(15, 20, "Minimum Gap Threshold", style)
         sheet.write(18, 20, "Maximum Gap Threshold", style)
         sheet.write(21, 20, "Mimimum Thickness Value", style)
+
+        # width and height
+        sheet.write(24, 20, "Starting Height", style)
+        sheet.write(27, 20, "Ending Height", style)
+        sheet.write(30, 20, "Starting Width", style)
+        sheet.write(33, 20, "Ending Width", style)
         
         listEnd = len(self.outer_distance_list)
         for x in range(0, listEnd):
@@ -490,6 +507,10 @@ class Image:
         sheet.write(16, 20, self.minimum_gap_value)
         sheet.write(19, 20, self.maximum_gap_value)
         sheet.write(22, 20, self.min_gap_value)
+        sheet.write(25, 20, self.start_height)
+        sheet.write(28, 20, self.end_height)
+        sheet.write(31, 20, self.start_width)
+        sheet.write(34, 20, self.end_width)
         workbook.close()
 
     def StoreCommaSeperatedValues(self): #csv format
@@ -522,7 +543,7 @@ class Image:
             line = self.animal_number + ", ," + str(round(self.white_top_per, 1)) + ", ," + str(round(self.inner_distance_per,1)) + ", ," + str(round(self.white_bot_per, 1)) + "\n"
             file.write(line)
             file.write("\n")
-            file.write("White Value Threshold, , Minimum Gap Threshold, , Maximum Gap Threshold, , Mimimum Thickness Value\n")
-            line2 = str(self.white_value_threshold) + ", ," + str(self.minimum_gap_value) + ", ," + str(self.maximum_gap_value) + ", ," + str(self.min_gap_value) + "\n"
+            file.write("White Value Threshold, , Minimum Gap Threshold, , Maximum Gap Threshold, , Mimimum Thickness Value, , Starting Height, , Ending Height, , Starting Width, , Ending Width\n")
+            line2 = str(self.white_value_threshold) + ", ," + str(self.minimum_gap_value) + ", ," + str(self.maximum_gap_value) + ", ," + str(self.min_gap_value) + ", ," + str(self.start_height) + ", ," + str(self.end_height) + ", ," + str(self.start_width) + ", ," + str(self.end_width) + "\n"
             file.write(line2)
         file.close()

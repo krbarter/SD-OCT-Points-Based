@@ -82,26 +82,26 @@ class MyPanel(wx.Panel):
 
         # -- Adjustment of the width and height of the image using the user inteface
         #start_height
-        start_height_label = wx.StaticText(self, label = "Starting Height", pos = (155, 5))
-        self.start_height_textcontrol = wx.TextCtrl(self, pos = (155, 20), size = (100, 20))
+        start_height_label = wx.StaticText(self, label = "Starting Height", pos = (160, 5))
+        self.start_height_textcontrol = wx.TextCtrl(self, pos = (160, 20), size = (100, 20))
         self.start_height_textcontrol.SetValue("0")
         self.start_height_textcontrol.Bind(wx.EVT_TEXT, self.getStartHeight)
 
         #end_height
-        end_height_label = wx.StaticText(self, label = "Ending Height", pos = (285, 5))
-        self.end_height_textcontrol = wx.TextCtrl(self, pos = (285, 20), size = (100, 20))
+        end_height_label = wx.StaticText(self, label = "Ending Height", pos = (290, 5))
+        self.end_height_textcontrol = wx.TextCtrl(self, pos = (290, 20), size = (100, 20))
         self.end_height_textcontrol.SetValue("500")
         self.end_height_textcontrol.Bind(wx.EVT_TEXT, self.getEndHeight)
 
         #start_width
-        start_width_label = wx.StaticText(self, label = "Starting Width", pos = (415, 5))
-        self.start_width_textcontrol = wx.TextCtrl(self, pos = (415, 20), size = (100, 20))
+        start_width_label = wx.StaticText(self, label = "Starting Width", pos = (420, 5))
+        self.start_width_textcontrol = wx.TextCtrl(self, pos = (420, 20), size = (100, 20))
         self.start_width_textcontrol.SetValue("0")
         self.start_width_textcontrol.Bind(wx.EVT_TEXT, self.getStartWidth)
 
         #end_width
-        end_width_label = wx.StaticText(self, label = "Ending Width", pos = (545, 5))
-        self.end_width_textcontrol = wx.TextCtrl(self, pos = (545, 20), size = (100, 20))
+        end_width_label = wx.StaticText(self, label = "Ending Width", pos = (550, 5))
+        self.end_width_textcontrol = wx.TextCtrl(self, pos = (550, 20), size = (100, 20))
         self.end_width_textcontrol.SetValue("1000")
         self.end_width_textcontrol.Bind(wx.EVT_TEXT, self.getEndWidth)
 
