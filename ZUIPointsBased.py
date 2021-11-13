@@ -15,7 +15,7 @@ figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
 from HeatMap import HeatMap
 
 class Image:
-    def __init__(self, img_List, s_image_number, e_image_number, white_value_threshold, minimum_gap_value, maximum_gap_value, min_gap_value, storage_type, heatmap_setting, smoothingline_setting, testing):
+    def __init__(self, img_List, s_image_number, e_image_number, white_value_threshold, minimum_gap_value, maximum_gap_value, min_gap_value, storage_type, heatmap_setting, smoothingline_setting, testing, start_height, end_height, start_width, end_width):
         self.img_List = img_List
         self.start    = s_image_number
         self.stop     = e_image_number
@@ -29,6 +29,10 @@ class Image:
         self.heatmap_setting       = heatmap_setting
         self.smoothingline_setting = smoothingline_setting
         self.testing = testing
+        self.start_height = int(start_height)
+        self.end_height   = int(end_height)
+        self.start_width  = int(start_width)
+        self.end_width    = int(end_width)
         
         #layers
         self.outer_distance_list = []
@@ -192,13 +196,13 @@ class Image:
         image_top       = []
                 
 
-        for pointx in range(0, 950): #1000
+        for pointx in range(self.start_width, self.end_width): #1000
             midpath  = []
             midwhite = []
             top      = []
             bot      = []
 
-            for y in range(0,400): #RESTRICTING THE BOTTOM RANGE 1024 total  #
+            for y in range(self.start_height,self.end_height): #RESTRICTING THE BOTTOM RANGE 1024 total  #
                  color = image[y, pointx]
                  midpath.append([y, color[0]])
                  
@@ -226,14 +230,24 @@ class Image:
                     if (top[-1] - top[0] >= self.min_gap_value and bot[-1] - bot[0] >= self.min_gap_value and top[0] != 0 and self.last_top_value - (bot[-1] - top[0]) >= -10):
                         #image[medianPoint + 205][pointx] = (0,0,255,-1) # red points
                         #image[medianPoint + 206][pointx] = (0,0,255,-1) # red points
-                        image[top[-1]][pointx] = (0,255,0,-1)    #top green
-                        image[bot[0]][pointx] = (0,255,0,-1)     #bot green
-                        image[top[0]][pointx] = (255,0,0,-1)     #top blue 
-                        image[bot[-1]][pointx] = (255,0,0,-1)    #bot blue
+                        if self.start_height > 0:
+                            image[top[-1] + self.start_height][pointx] = (0,255,0,-1)    #top green
+                            image[bot[0]  + self.start_height][pointx]  = (0,255,0,-1)    #bot green
+                            image[top[0]  + self.start_height][pointx]  = (255,0,0,-1)    #top blue 
+                            image[bot[-1] + self.start_height][pointx] = (255,0,0,-1)    #bot blue
 
-                        if self.smoothingline_setting == "On":
-                            smooth[medianPoint][pointx] = (0,0,255,-1) # red points
-                            smooth[medianPoint][pointx] = (0,0,255,-1) # red points
+                            if self.smoothingline_setting == "On":
+                                smooth[medianPoint + self.start_height][pointx] = (0,0,255,-1) # red points
+                                smooth[medianPoint + self.start_height][pointx] = (0,0,255,-1) # red points
+                        else:
+                            image[top[-1]][pointx] = (0,255,0,-1)    #top green
+                            image[bot[0]][pointx]  = (0,255,0,-1)    #bot green
+                            image[top[0]][pointx]  = (255,0,0,-1)    #top blue 
+                            image[bot[-1]][pointx] = (255,0,0,-1)    #bot blue
+
+                            if self.smoothingline_setting == "On":
+                                smooth[medianPoint][pointx] = (0,0,255,-1) # red points
+                                smooth[medianPoint][pointx] = (0,0,255,-1) # red points
 
 
                     #geting heatmap points

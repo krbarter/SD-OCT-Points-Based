@@ -80,6 +80,32 @@ class MyPanel(wx.Panel):
         self.start = wx.Button(self, label = "Start", pos = (10, 607), size = (125, 30))
         self.start.Bind(wx.EVT_BUTTON, self.getStart)
 
+        # -- Adjustment of the width and height of the image using the user inteface
+        #start_height
+        start_height_label = wx.StaticText(self, label = "Starting Height", pos = (155, 5))
+        self.start_height_textcontrol = wx.TextCtrl(self, pos = (155, 20), size = (100, 20))
+        self.start_height_textcontrol.SetValue("0")
+        self.start_height_textcontrol.Bind(wx.EVT_TEXT, self.getStartHeight)
+
+        #end_height
+        end_height_label = wx.StaticText(self, label = "Ending Height", pos = (285, 5))
+        self.end_height_textcontrol = wx.TextCtrl(self, pos = (285, 20), size = (100, 20))
+        self.end_height_textcontrol.SetValue("500")
+        self.end_height_textcontrol.Bind(wx.EVT_TEXT, self.getEndHeight)
+
+        #start_width
+        start_width_label = wx.StaticText(self, label = "Starting Width", pos = (415, 5))
+        self.start_width_textcontrol = wx.TextCtrl(self, pos = (415, 20), size = (100, 20))
+        self.start_width_textcontrol.SetValue("0")
+        self.start_width_textcontrol.Bind(wx.EVT_TEXT, self.getStartWidth)
+
+        #end_width
+        end_width_label = wx.StaticText(self, label = "Ending Width", pos = (545, 5))
+        self.end_width_textcontrol = wx.TextCtrl(self, pos = (545, 20), size = (100, 20))
+        self.end_width_textcontrol.SetValue("1000")
+        self.end_width_textcontrol.Bind(wx.EVT_TEXT, self.getEndWidth)
+
+
     def getImageList(self, event):
         dlg = wx.DirDialog(self, message="Choose a folder")
         self.imgs = []
@@ -130,6 +156,20 @@ class MyPanel(wx.Panel):
     def getSmoothingLineSetting(self, event):
         self.smoothingline_setting = self.smoothingline_setting_rbox.GetStringSelection()
 
+    # Height
+    def getStartHeight(self, enent):
+        self.start_height = self.start_height_textcontrol.GetValue()
+
+    def getEndHeight(self, enent):
+        self.end_height = self.end_height_textcontrol.GetValue()
+
+    # Width
+    def getStartWidth(self, event):
+        self.start_width = self.start_width_textcontrol.GetValue()
+
+    def getEndWidth(self, event):
+        self.end_width = self.end_width_textcontrol.GetValue()
+
     def getTest(self, event):
         self.starting_image_number = self.starting_image_number_spin.GetValue()
         self.white_value_threshold = self.white_value_threshold_spin.GetValue()
@@ -141,8 +181,14 @@ class MyPanel(wx.Panel):
         self.smoothingline_setting = self.smoothingline_setting_rbox.GetStringSelection()
         testing = True
 
+        # height and width
+        self.start_height = self.start_height_textcontrol.GetValue()
+        self.end_height   = self.end_height_textcontrol.GetValue()
+        self.start_width  = self.start_width_textcontrol.GetValue()
+        self.end_width    = self.end_width_textcontrol.GetValue()
+
         #Image
-        image = Image(self.imgs, self.starting_image_number, self.starting_image_number + 1, self.white_value_threshold,  self.minimum_gap_value, self.maximum_gap_value, self.min_gap_value, self.storage_type, self.heatmap_setting, self.smoothingline_setting, testing)
+        image = Image(self.imgs, self.starting_image_number, self.starting_image_number + 1, self.white_value_threshold,  self.minimum_gap_value, self.maximum_gap_value, self.min_gap_value, self.storage_type, self.heatmap_setting, self.smoothingline_setting, testing, self.start_height, self.end_height, self.start_width, self.end_width)
         image.Scheduler()
 
 
@@ -157,9 +203,15 @@ class MyPanel(wx.Panel):
         self.heatmap_setting = str(self.heatmap_setting_textcontrol.GetValue())
         self.smoothingline_setting = self.smoothingline_setting_rbox.GetStringSelection()
         testing = False
+
+        # height and width
+        self.start_height = self.start_height_textcontrol.GetValue()
+        self.end_height   = self.end_height_textcontrol.GetValue()
+        self.start_width  = self.start_width_textcontrol.GetValue()
+        self.end_width    = self.end_width_textcontrol.GetValue()
         
         #Image
-        image = Image(self.imgs, self.starting_image_number, self.ending_image_number, self.white_value_threshold,  self.minimum_gap_value, self.maximum_gap_value, self.min_gap_value, self.storage_type, self.heatmap_setting, self.smoothingline_setting, testing)
+        image = Image(self.imgs, self.starting_image_number, self.starting_image_number + 1, self.white_value_threshold,  self.minimum_gap_value, self.maximum_gap_value, self.min_gap_value, self.storage_type, self.heatmap_setting, self.smoothingline_setting, testing, self.start_height, self.end_height, self.start_width, self.end_width)
         image.Scheduler()
 
         #Heatmap
