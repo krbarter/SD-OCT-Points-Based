@@ -98,11 +98,14 @@ class MyPanel(wx.Panel):
             
             png = wx.Image(self.imgs[toshow], wx.BITMAP_TYPE_ANY)
             png = png.Scale(500, 500).ConvertToBitmap()
-            wx.StaticBitmap(self, -1, png, (160, 50), (png.GetWidth(), png.GetHeight()))
+            self.bitmap = wx.StaticBitmap(self, -1, png, (160, 50), (png.GetWidth(), png.GetHeight()))
         dlg.Destroy()
 
     def getStartingImage(self, event):
         self.starting_image_number = self.starting_image_number_spin.GetValue()
+        png = wx.Image(self.imgs[self.starting_image_number], wx.BITMAP_TYPE_ANY)
+        png = png.Scale(500, 500).ConvertToBitmap()
+        self.bitmap.SetBitmap(wx.Bitmap(png))
 
     def getEndingImage(self, event):
         self.ending_image_number   = self.ending_image_number_spin.GetValue()

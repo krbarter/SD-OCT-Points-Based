@@ -1,11 +1,12 @@
 import cv2
 import statistics
 import numpy as np
-import matplotlib
 import matplotlib.image as mpimg
 from time import gmtime, strftime
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import figure
+from mpl_toolkits import mplot3d
+from matplotlib import cm
 figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
 
 class HeatMap:
@@ -13,20 +14,26 @@ class HeatMap:
         self.retinal_thickness = retinal_thickness
         self.retinal_thickness_gaps = retinal_thickness_gaps
         self.name = name
+        
         if len(frame) > 2:
             self.frame_title = "Frame " + str(frame[0]) + "-" + str(frame[-1])
         else:
             self.frame_title = ""
+        
         self.frame = frame
-        self.retinal_array = []
+        self.retinal_array    = []
+        self.retinal_array_3d = []
         self.retinal_gradient = []
-        self.color_key = []
+        self.color_key        = []
+        
         self.minR = 0
         self.maxR = 0
         self.pixel_width = 10 #standard = 4
         self.file_name = strftime("%Y-%m-%d %H-%M-%S", gmtime())
+        
         self.image_saved = False
         self.heat = heat
+
 
     def getIsSaved(self):
         return self.image_saved
@@ -53,30 +60,33 @@ class HeatMap:
         print(), print("MINUMUM VALUE: ", self.new_min)
         
         for x in self.retinal_thickness_gaps:
-            img = []
+            img    = []
+            img_3d = []
             for y in x:
                 if y  != "B":
                     img.append(int(y) - self.new_min)   # 155 OS 00014 = 113 for the minumin value for comparison // new_min
+                    img_3d.append(int(y) - self.new_min) 
                 else:
                     img.append(y)
             self.retinal_array.append(img)
+            self.retinal_array_3d.append(img_3d)
 
-        color_gradient = [[0,100,250], [0,95,235], [0,90,255], [0,85,212], [0,80,199], [0,75,186],
-                          [0,70,175],  [0,65,162], [0,60,151], [0,55,138], [0,50,125], #Blue
+        self.color_gradient = [[0,100,250], [0,95,235], [0,90,255], [0,85,212], [0,80,199], [0,75,186],
+                          [0,70,175],  [0,65,162], [0,60,151], [0,55,138], [0,50,125],                       #Blue
 
                         [9,255,0], [8,245,0], [8,235,0], [7,225,0], [7,215,0], [6,205,0],
-                        [6,195,0], [5,185,0], [4,175,0], [4,165,0], [3,155,0], #Green
+                        [6,195,0], [5,185,0], [4,175,0], [4,165,0], [3,155,0],                               #Green
 
                         [255,255,0], [250,250,0], [245,245,0], [240,240,0], [235,235,0],
-                        [230,230,0], [225,225,0], [220,220,0], [215,215,0], [210,210,0], [205,205,0], #Yellow
+                        [230,230,0], [225,225,0], [220,220,0], [215,215,0], [210,210,0], [205,205,0],        #Yellow
 
                         [255,119,0], [245,117,0], [235,110,0], [225,105,0], [215,100,0], [205,96,0],
-                        [195,91,0], [185,86,0], [175,83,0], [165,78,0], [155,72,0], #Orange
+                        [195,91,0], [185,86,0], [175,83,0], [165,78,0], [155,72,0],                          #Orange
 
                         [255,0,0], [240,0,0], [225,0,0], [210,0,0], [195,0,0], [180,0,0],
-                        [165,0,0], [150,0,0], [135,0,0], [120,0,0], [105,0,0]] #Red
+                        [165,0,0], [150,0,0], [135,0,0], [120,0,0], [105,0,0]]                               #Red
 
-        self.color_key = [x for x in color_gradient for i in range(10)]
+        self.color_key = [x for x in self.color_gradient for i in range(10)]
 
         #spplying the color values
         for line in self.retinal_array:
@@ -84,12 +94,12 @@ class HeatMap:
             for x in line:
                 if x == "B":
                     line_in.append([0,0,0])
-                elif (x >= len(color_gradient)):
+                elif (x >= len(self.color_gradient)):
                     line_in.append([105,0,0])
                 elif (x < 0):
                     line_in.append([0,100,250])
                 else:
-                    line_in.append(color_gradient[x])
+                    line_in.append(self.color_gradient[x])
 
             #adding four lines per measurement to extend the image
             for x in range(self.pixel_width):
@@ -141,7 +151,6 @@ class HeatMap:
             
     # create and save as a tiff file
     def createImg(self):
-        
         height = len(self.retinal_gradient) #number of Images
         width = len(self.retinal_gradient[0]) #width of each images
         blank_image = np.zeros((height,width,3), np.uint8)
@@ -170,14 +179,38 @@ class HeatMap:
         self.image_saved = True #saves the image in the current directory
         #cv2.imshow("Retinal Heatmap", blank_image)
 
-    #creating the click line to show image of the measurement
-    def clickbox(self):
-        pass
+    # tring to plot the heatmap in 3d to show the retinal nerve in more context, points are not displaying properly, too mant points when loading the program
+    def plot3d(self):
+        points = []
+        for x in range(0, len(self.retinal_array_3d)):
+            for y in range(0, len(self.retinal_array_3d[x])):
+                points.append([y, self.retinal_array_3d[x][y], x])
+
+        x_p = []
+        y_p = []
+        z_p = []
+        for x in range(0, len(points)):
+            x_p.append(points[x][0])
+            y_p.append(points[x][1])
+            z_p.append(points[x][2])
+
+        #print(points)
+        #print(x_p)
+        #print(len(y_p))
+        #print(len(z_p))
+        #ax.plot_trisurf(y_p, x_p, z_p, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+
+        # creating the 3d plot and displaying the points / one colour
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        ax.scatter(y_p, x_p, z_p, alpha=1)
+        plt.show()
 
     def sceduler(self):
         HeatMap.gradient(self)
         HeatMap.center(self)
         HeatMap.createImg(self)
+        #HeatMap.plot3d(self)     # test feature
 
 if __name__ == "__main__":
     retinal_thickness = [[45, 23], [23, 12], [12]]
