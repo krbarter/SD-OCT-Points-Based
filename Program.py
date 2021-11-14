@@ -9,6 +9,10 @@ class MyFrame(wx.Frame):
     def __init__(self, parent, title):
         super(MyFrame, self).__init__(parent, title= title, size = (700,680))
         self.panel = MyPanel(self)
+        self.SetBackgroundColour("#2B4562")
+        self.SetForegroundColour("#2B4562")
+        ico = wx.Icon("icon.png", wx.BITMAP_TYPE_PNG)
+        self.SetIcon(ico)
 
 
 class MyPanel(wx.Panel):
