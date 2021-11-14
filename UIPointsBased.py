@@ -6,6 +6,7 @@ import xlsxwriter
 import statistics
 import numpy as np
 import matplotlib.image as mpimg
+from random import randint
 from time import gmtime, strftime
 from xlwt import Workbook
 from matplotlib import pyplot as plt
@@ -15,11 +16,12 @@ figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
 from HeatMap import HeatMap
 
 class Image:
-    def __init__(self, img_List, s_image_number, e_image_number, white_value_threshold, minimum_gap_value, maximum_gap_value, min_gap_value, storage_type, heatmap_setting, smoothingline_setting, testing, start_height, end_height, start_width, end_width):
+    def __init__(self, img_List, s_image_number, e_image_number, white_value_threshold, minimum_gap_value, maximum_gap_value, min_gap_value, storage_type, heatmap_setting, smoothingline_setting, testing, start_height, end_height, start_width, end_width, dirname):
         self.img_List = img_List
         self.start    = s_image_number
         self.stop     = e_image_number
         self.name     = ""
+        dir_path      = os.path.dirname(os.path.realpath("UIPointsBased.py"))
         
         #SETTINGS // THRESHOLDING VARIBLES
         self.white_value_threshold = white_value_threshold      #Standard Value -> 110  ==> [IF THE OTHER VALUE IS NOT USED]
@@ -34,7 +36,16 @@ class Image:
         self.end_height   = int(end_height)
         self.start_width  = int(start_width)
         self.end_width    = int(end_width)
-        
+        self.dirname      = dir_path + os.sep + dirname.split(os.sep)[-1]
+
+        # makeing new directory
+        if os.path.exists(self.dirname):
+            self.dirname = self.dirname + " " + str(randint(0, 999999))
+            os.makedirs(self.dirname)
+        else:
+            os.makedirs(self.dirname)
+
+
         #layers
         self.outer_distance_list = []
         self.white_top_list      = []
@@ -118,6 +129,9 @@ class Image:
 
     def getHeat(self):
         return self.heatmap_setting
+
+    def getdirname(self):
+        return self.dirname
 
     def Scheduler(self):
         for x in range(self.start, self.stop):
@@ -299,7 +313,10 @@ class Image:
         image_scale = cv2.cvtColor(image,cv2.COLOR_RGB2BGR) # moving from cv2's BRG mode
         image_crop = image_scale[0:750, 0:1000]
         #path = "C:\\Users\\krbar\\Desktop\\Project\\Images"
-        path = "Images"
+
+        path = self.dirname + os.sep + "Images"
+        os.mkdir(path)
+
         #name = time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
         self.name = self.animal_number.split(os.sep)[-1]
         name = self.name + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
@@ -307,7 +324,8 @@ class Image:
 
         if self.smoothingline_setting == "On":
             image_s = cv2.cvtColor(smooth,cv2.COLOR_RGB2BGR)
-            path = "SmoothingLine"
+            path = self.dirname + os.sep + "SmoothingLine"
+            os.mkdir(path)
             name = self.name + " " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
             mpimg.imsave(os.path.join(path , name), image_s)
                     
@@ -446,12 +464,12 @@ class Image:
         
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         name_start = self.animal_number.split(os.sep)[-1]
-        wb.save(name_start + " " + time_current + ".xls")
+        wb.save(self.dirname + os.sep + name_start + " " + time_current + ".xls")
         
     def StoreDataModern(self): #xlsx format
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
         name_start = self.animal_number.split(os.sep)[-1]
-        workbook = xlsxwriter.Workbook((name_start + " " + time_current + ".xlsx"))
+        workbook = xlsxwriter.Workbook(self.dirname + os.sep + (name_start + " " + time_current + ".xlsx"))
         sheet = workbook.add_worksheet()
         style = workbook.add_format({'bold': True})
 
@@ -515,7 +533,7 @@ class Image:
 
     def StoreCommaSeperatedValues(self): #csv format
         time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime())
-        name_start = self.animal_number.split(os.sep)[-1]
+        name_start = self.dirname + os.sep + self.animal_number.split(os.sep)[-1]
         listEnd = len(self.outer_distance_list)
         with open(name_start + " " + time_current + ".csv", "w") as file:
             file.write("Frame Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , IPL/INL/OPL/ONL/IS (um), Number of Readings, , OS/RPE (um), Number of Readings,\n")

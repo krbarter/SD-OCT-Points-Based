@@ -1,3 +1,4 @@
+import os
 import cv2
 import statistics
 import numpy as np
@@ -10,10 +11,11 @@ from matplotlib import cm
 figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
 
 class HeatMap:
-    def __init__(self, retinal_thickness, name, frame, heat, retinal_thickness_gaps):
+    def __init__(self, retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname):
         self.retinal_thickness = retinal_thickness
         self.retinal_thickness_gaps = retinal_thickness_gaps
         self.name = name
+        self.dirname = dirname
         
         if len(frame) > 2:
             self.frame_title = "Frame " + str(frame[0]) + "-" + str(frame[-1])
@@ -174,7 +176,7 @@ class HeatMap:
         cv2.putText(blank_image, min_line,(230, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)
         cv2.putText(blank_image, max_line,(660, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)
 
-        cv2.imwrite(str(self.new_min) + " " + self.file_name + ".tiff", blank_image)
+        cv2.imwrite(self.dirname + os.sep + str(self.new_min) + " " + self.file_name + ".tiff", blank_image)
         print(self.file_name + ".tiff")
         self.image_saved = True #saves the image in the current directory
         #cv2.imshow("Retinal Heatmap", blank_image)
