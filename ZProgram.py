@@ -215,7 +215,7 @@ class MyPanel(wx.Panel):
         self.end_width    = self.end_width_textcontrol.GetValue()
         
         #Image
-        image = Image(self.imgs, self.starting_image_number, self.starting_image_number + 1, self.white_value_threshold,  self.minimum_gap_value, self.maximum_gap_value, self.min_gap_value, self.storage_type, self.heatmap_setting, self.smoothingline_setting, testing, self.start_height, self.end_height, self.start_width, self.end_width, self.dirname)
+        image = Image(self.imgs, self.starting_image_number, self.ending_image_number, self.white_value_threshold,  self.minimum_gap_value, self.maximum_gap_value, self.min_gap_value, self.storage_type, self.heatmap_setting, self.smoothingline_setting, testing, self.start_height, self.end_height, self.start_width, self.end_width, self.dirname)
         image.Scheduler()
 
         #Heatmap
