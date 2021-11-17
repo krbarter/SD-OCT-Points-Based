@@ -126,6 +126,7 @@ class MyPanel(wx.Panel):
                 toshow = 0
             
             png = wx.Image(self.imgs[toshow], wx.BITMAP_TYPE_ANY)
+            self.W, self.H = png.GetSize()
             png = png.Scale(500, 500).ConvertToBitmap()
             self.bitmap = wx.StaticBitmap(self, -1, png, (160, 50), (png.GetWidth(), png.GetHeight()))
         dlg.Destroy()
@@ -188,8 +189,15 @@ class MyPanel(wx.Panel):
         # height and width
         self.start_height = self.start_height_textcontrol.GetValue()
         self.end_height   = self.end_height_textcontrol.GetValue()
+        if int(self.end_height) > self.H:
+            self.end_height = self.H
+            self.end_height_textcontrol.SetValue(str(self.H))
+        
         self.start_width  = self.start_width_textcontrol.GetValue()
         self.end_width    = self.end_width_textcontrol.GetValue()
+        if int(self.end_width) > self.W:
+            self.end_width = self.W
+            self.end_width_textcontrol.SetValue(str(self.W))
 
         #Image
         image = Image(self.imgs, self.starting_image_number, self.starting_image_number + 1, self.white_value_threshold,  self.minimum_gap_value, self.maximum_gap_value, self.min_gap_value, self.storage_type, self.heatmap_setting, self.smoothingline_setting, testing, self.start_height, self.end_height, self.start_width, self.end_width, self.dirname)
@@ -198,7 +206,12 @@ class MyPanel(wx.Panel):
 
     def getStart(self, event):
         self.starting_image_number = self.starting_image_number_spin.GetValue()
+
         self.ending_image_number   = self.ending_image_number_spin.GetValue()
+        if self.ending_image_number > len(self.imgs):
+            self.ending_image_number = len(self.imgs)
+            self.ending_image_number_spin.SetValue(len(self.imgs))
+        
         self.white_value_threshold = self.white_value_threshold_spin.GetValue()
         self.minimum_gap_value = -self.minimum_gap_value_spin.GetValue()
         self.maximum_gap_value = -self.maximum_gap_value_spin.GetValue()
@@ -211,8 +224,15 @@ class MyPanel(wx.Panel):
         # height and width
         self.start_height = self.start_height_textcontrol.GetValue()
         self.end_height   = self.end_height_textcontrol.GetValue()
+        if int(self.end_height) > self.H:
+            self.end_height = self.H
+            self.end_height_textcontrol.SetValue(str(self.H))
+        
         self.start_width  = self.start_width_textcontrol.GetValue()
         self.end_width    = self.end_width_textcontrol.GetValue()
+        if int(self.end_width) > self.W:
+            self.end_width = self.W
+            self.end_width_textcontrol.SetValue(str(self.W))
         
         #Image
         image = Image(self.imgs, self.starting_image_number, self.ending_image_number, self.white_value_threshold,  self.minimum_gap_value, self.maximum_gap_value, self.min_gap_value, self.storage_type, self.heatmap_setting, self.smoothingline_setting, testing, self.start_height, self.end_height, self.start_width, self.end_width, self.dirname)
