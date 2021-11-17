@@ -315,7 +315,8 @@ class Image:
         #path = "C:\\Users\\krbar\\Desktop\\Project\\Images"
         
         path = self.dirname + os.sep + "Images"
-        os.mkdir(path)
+        if not os.path.exists(path):
+            os.mkdir(path)
         
         #name = time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
         name_start = self.animal_number.split(os.sep)[-1]
@@ -325,7 +326,8 @@ class Image:
         if self.smoothingline_setting == "On":
             image_s = cv2.cvtColor(smooth,cv2.COLOR_RGB2BGR)
             path = self.dirname + os.sep + "SmoothingLine"
-            os.mkdir(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
             name = name_start + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
             mpimg.imsave(os.path.join(path , name), image_s)
                     
