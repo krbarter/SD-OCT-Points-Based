@@ -241,23 +241,45 @@ class Image:
                         #image[medianPoint + 205][pointx] = (0,0,255,-1) # red points
                         #image[medianPoint + 206][pointx] = (0,0,255,-1) # red points
                         if self.start_height > 0:
-                            image[top[-1] + self.start_height][pointx] = (0,255,0,-1)    #top green
-                            image[bot[0]  + self.start_height][pointx]  = (0,255,0,-1)    #bot green
-                            image[top[0]  + self.start_height][pointx]  = (255,0,0,-1)    #top blue 
-                            image[bot[-1] + self.start_height][pointx] = (255,0,0,-1)    #bot blue
+                            if (len(image[top[-1] + self.start_height][pointx]) == 4):
+                                image[top[-1] + self.start_height][pointx] = (0,255,0,-1)    #top green
+                                image[bot[0]  + self.start_height][pointx] = (0,255,0,-1)    #bot green
+                                image[top[0]  + self.start_height][pointx] = (255,0,0,-1)    #top blue 
+                                image[bot[-1] + self.start_height][pointx] = (255,0,0,-1)    #bot blue
+                            else:
+                                image[top[-1] + self.start_height][pointx] = [0,255,0]       #top green
+                                image[bot[0]  + self.start_height][pointx] = [0,255,0]       #bot green
+                                image[top[0]  + self.start_height][pointx] = [255,0,0]       #top blue 
+                                image[bot[-1] + self.start_height][pointx] = [255,0,0]       #bot blue
 
                             if self.smoothingline_setting == "On":
-                                smooth[medianPoint + self.start_height][pointx] = (0,0,255,-1) # red points
-                                smooth[medianPoint + self.start_height][pointx] = (0,0,255,-1) # red points
+                                if (len(smooth[medianPoint + self.start_height][pointx]) == 4):
+                                    smooth[medianPoint + self.start_height][pointx] = (0,0,255,-1) # red points
+                                    smooth[medianPoint + self.start_height][pointx] = (0,0,255,-1) # red points
+                                else:
+                                    smooth[medianPoint + self.start_height][pointx] = [0,0,255] # red points
+                                    smooth[medianPoint + self.start_height][pointx] = [0,0,255] # red points
+
                         else:
-                            image[top[-1]][pointx] = (0,255,0,-1)    #top green
-                            image[bot[0]][pointx]  = (0,255,0,-1)    #bot green
-                            image[top[0]][pointx]  = (255,0,0,-1)    #top blue 
-                            image[bot[-1]][pointx] = (255,0,0,-1)    #bot blue
+                            if (len(image[top[-1]][pointx]) == 4):
+                                image[top[-1]][pointx] = (0,255,0,-1)    #top green
+                                image[bot[0]][pointx]  = (0,255,0,-1)    #bot green
+                                image[top[0]][pointx]  = (255,0,0,-1)    #top blue 
+                                image[bot[-1]][pointx] = (255,0,0,-1)    #bot blue
+                            else:
+                                image[top[-1]][pointx] = [0,255,0]       #top green
+                                image[bot[0]][pointx]  = [0,255,0]       #bot green
+                                image[top[0]][pointx]  = [255,0,0]       #top blue 
+                                image[bot[-1]][pointx] = [255,0,0]       #bot blue
+
 
                             if self.smoothingline_setting == "On":
-                                smooth[medianPoint][pointx] = (0,0,255,-1) # red points
-                                smooth[medianPoint][pointx] = (0,0,255,-1) # red points
+                                if (len(smooth[medianPoint + self.start_height][pointx]) == 4):
+                                    smooth[medianPoint + self.start_height][pointx] = (0,0,255,-1) # red points
+                                    smooth[medianPoint + self.start_height][pointx] = (0,0,255,-1) # red points
+                                else:
+                                    smooth[medianPoint + self.start_height][pointx] = [0,0,255] # red points
+                                    smooth[medianPoint + self.start_height][pointx] = [0,0,255] # red points
 
 
 
