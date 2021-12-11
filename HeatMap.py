@@ -17,8 +17,6 @@ class HeatMap:
         self.name = name
         self.dirname = dirname
         self.image_list_dicktionary = image_list
-
-        print(self.image_list_dicktionary)
         
         if len(frame) > 2:
             self.frame_title = "Frame " + str(frame[0]) + "-" + str(frame[-1])
@@ -187,18 +185,15 @@ class HeatMap:
 
         def onMouse(event, x, y, flag, p):
             if event == cv2.EVENT_LBUTTONDOWN:
-            # draw circle here (etc...)
-
-                # new feature, remove if not working
-                print('x = %d, y = %d'%(x, y))
                 img_value = (y - 45) // 10
-                img = self.image_list_dicktionary[img_value]
-                mat_img = mpimg.imread(img, 0)
-                cv2.imshow("Current Image", mat_img)
-                # new feature, remove if not working
+                if img_value in self.image_list_dicktionary:
+                    img = self.image_list_dicktionary[img_value]
+                    mat_img = mpimg.imread(img, 0)
+                    mat_img = cv2.cvtColor(mat_img,cv2.COLOR_RGB2BGR)
+                    cv2.imshow("Current Image", mat_img)
+                    # new feature, remove if not working
         
         #print(self.image_list_dicktionary)
-        print(len(self.image_list_dicktionary))
         cv2.imshow("Retinal Heatmap", blank_image)
         cv2.setMouseCallback("Retinal Heatmap", onMouse)
         cv2.waitKey(0)

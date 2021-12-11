@@ -137,8 +137,8 @@ class Image:
     def getdirname(self):
         return self.dirname
 
-    def getimagelist(self):
-        return self.img_List
+    def getimagedict(self):
+        return self.image_present_dict
 
     def Scheduler(self):
         for x in range(self.start, self.stop):
@@ -348,9 +348,9 @@ class Image:
             os.mkdir(path)
         
         #name = time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
-        self.image_present_dict[self.img_List.index(self.current_img)] = self.current_img
         name_start = self.animal_number.split(os.sep)[-1]
         name = name_start + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
+        self.image_present_dict[self.img_List.index(self.current_img)] = os.path.join(path , name)
         mpimg.imsave(os.path.join(path , name), image_crop)
 
         if self.smoothingline_setting == "On":
