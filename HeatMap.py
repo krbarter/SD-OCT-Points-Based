@@ -16,7 +16,9 @@ class HeatMap:
         self.retinal_thickness_gaps = retinal_thickness_gaps
         self.name = name
         self.dirname = dirname
-        self.image_list = image_list
+        self.image_list_dicktionary = image_list
+
+        print(self.image_list_dicktionary)
         
         if len(frame) > 2:
             self.frame_title = "Frame " + str(frame[0]) + "-" + str(frame[-1])
@@ -105,7 +107,9 @@ class HeatMap:
                     line_in.append(self.color_gradient[x])
 
             #adding four lines per measurement to extend the image
+            #self.image_list_dicktionary[x] = [x, self.image_list[self.retinal_array.index(line)]]
             for x in range(self.pixel_width):
+                #self.image_list_dicktionary.append([x, self.image_list[self.retinal_array.index(line)]])
                 self.retinal_gradient.append(line_in)       
             #image gradient key
 
@@ -184,8 +188,17 @@ class HeatMap:
         def onMouse(event, x, y, flag, p):
             if event == cv2.EVENT_LBUTTONDOWN:
             # draw circle here (etc...)
+
+                # new feature, remove if not working
                 print('x = %d, y = %d'%(x, y))
+                img_value = (y - 45) // 10
+                img = self.image_list_dicktionary[img_value]
+                mat_img = mpimg.imread(img, 0)
+                cv2.imshow("Current Image", mat_img)
+                # new feature, remove if not working
         
+        #print(self.image_list_dicktionary)
+        print(len(self.image_list_dicktionary))
         cv2.imshow("Retinal Heatmap", blank_image)
         cv2.setMouseCallback("Retinal Heatmap", onMouse)
         cv2.waitKey(0)
@@ -256,5 +269,6 @@ if __name__ == "__main__":
     retinal_thickness_g = [[50, "B", 25], [25, 10], [10]]
 
     dirname = ""
-    retinalMap = HeatMap(retinal_thickness, "Some", [40, 40], 0, retinal_thickness_g, dirname)
+    img_list = ["one", "two","three"]
+    retinalMap = HeatMap(retinal_thickness, "Some", [40, 40], 0, retinal_thickness_g, dirname, img_list)
     retinalMap.sceduler()

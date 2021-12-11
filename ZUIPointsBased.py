@@ -38,6 +38,9 @@ class Image:
         self.end_width    = int(end_width)
         self.dirname      = dir_path + os.sep + dirname.split(os.sep)[-1]
 
+        # OUTPUT SETTINGS
+        self.image_present_dict = dict()
+
         # makeing new directory
         if os.path.exists(self.dirname):
             self.dirname = self.dirname + " " + str(randint(0, 999999))
@@ -140,6 +143,7 @@ class Image:
     def Scheduler(self):
         for x in range(self.start, self.stop):
             currentImage = self.img_List[x]
+            self.current_img = self.img_List[x]
             self.animal_number = currentImage[-42:-5]
             img = Image.prepareImage(self, currentImage)
 
@@ -344,6 +348,7 @@ class Image:
             os.mkdir(path)
         
         #name = time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
+        self.image_present_dict[self.img_List.index(self.current_img)] = self.current_img
         name_start = self.animal_number.split(os.sep)[-1]
         name = name_start + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
         mpimg.imsave(os.path.join(path , name), image_crop)
