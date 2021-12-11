@@ -11,11 +11,12 @@ from matplotlib import cm
 figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
 
 class HeatMap:
-    def __init__(self, retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname):
+    def __init__(self, retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname, image_list):
         self.retinal_thickness = retinal_thickness
         self.retinal_thickness_gaps = retinal_thickness_gaps
         self.name = name
         self.dirname = dirname
+        self.image_list = image_list
         
         if len(frame) > 2:
             self.frame_title = "Frame " + str(frame[0]) + "-" + str(frame[-1])
@@ -66,7 +67,7 @@ class HeatMap:
             img_3d = []
             for y in x:
                 if y  != "B":
-                    img.append(int(y) - self.new_min)   # 155 OS 00014 = 113 for the minumin value for comparison // new_min
+                    img.append(int(y) - self.new_min)     # 155 OS 00014 = 113 for the minumin value for comparison // new_min
                     img_3d.append(int(y) - self.new_min) 
                 else:
                     img.append(y)
@@ -179,7 +180,18 @@ class HeatMap:
         cv2.imwrite(self.dirname + os.sep + str(self.new_min) + " " + self.file_name + ".tiff", blank_image)
         print(self.file_name + ".tiff")
         self.image_saved = True #saves the image in the current directory
-        #cv2.imshow("Retinal Heatmap", blank_image)
+
+        def onMouse(event, x, y, flag, p):
+            if event == cv2.EVENT_LBUTTONDOWN:
+            # draw circle here (etc...)
+                print('x = %d, y = %d'%(x, y))
+        
+        cv2.imshow("Retinal Heatmap", blank_image)
+        cv2.setMouseCallback("Retinal Heatmap", onMouse)
+        cv2.waitKey(0)
+        
+
+
 
     # tring to plot the heatmap in 3d to show the retinal nerve in more context, points are not displaying properly, too mant points when loading the program
     def plot3d(self):
@@ -196,26 +208,53 @@ class HeatMap:
             y_p.append(points[x][1])
             z_p.append(points[x][2])
 
-        #print(points)
-        #print(x_p)
-        #print(len(y_p))
-        #print(len(z_p))
+
+        if __name__ == "__main__":
+            print(points)
+            #print(x_p)
+            #print(len(y_p))
+            #print(len(z_p))
+        
         #ax.plot_trisurf(y_p, x_p, z_p, cmap=cm.coolwarm, linewidth=0, antialiased=False)
 
-        # creating the 3d plot and displaying the points / one colour
+        # works the same as a scatter plot
+        #for x in range(0, len(points)):
+            #ax.scatter(points[x][0], points[x][1], points[x][2])
+        
+        #ax.scatter(y_p, x_p, z_p, alpha=1)
+        #X, Y = np.meshgrid(x_p, y_p)
+       
+        #ax.contour3D(X, Y, z_p, 50, cmap='binary')
+        #ax.plot_wireframe(X, Y, np.array(z_p), color='black')
+        #ax.plot_trisurf(y_p, x_p, z_p, cmap=cm.coolwarm, linewidth=0, antialiased=True)
+        
+        x = 0
+        def xx(x, y):
+            x = x + 1
+            return x
+
+        # should try building in a different mapping software
+        # 2d z does not make ant sense
+
+        X, Y = np.meshgrid(x_p, y_p)
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        ax.scatter(y_p, x_p, z_p, alpha=1)
+        ax = plt.axes(projection='3d')
+        ax.contour3D(X, Y, z_p, 50, cmap='binary')
         plt.show()
 
     def sceduler(self):
         HeatMap.gradient(self)
         HeatMap.center(self)
         HeatMap.createImg(self)
-        #HeatMap.plot3d(self)     # test feature
+
+        # test feature
+        #if __name__ == "__main__":
+            #HeatMap.plot3d(self)     
 
 if __name__ == "__main__":
-    retinal_thickness = [[45, 23], [23, 12], [12]]
-    retinal_thickness_g = [[45, "B", 23], [23, 12], [12]]
-    retinalMap = HeatMap(retinal_thickness, "Some", [40, 40], "A", retinal_thickness_g)
+    retinal_thickness = [[50, 25], [25, 10], [10]]
+    retinal_thickness_g = [[50, "B", 25], [25, 10], [10]]
+
+    dirname = ""
+    retinalMap = HeatMap(retinal_thickness, "Some", [40, 40], 0, retinal_thickness_g, dirname)
     retinalMap.sceduler()

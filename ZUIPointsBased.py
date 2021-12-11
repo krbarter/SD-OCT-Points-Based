@@ -134,6 +134,9 @@ class Image:
     def getdirname(self):
         return self.dirname
 
+    def getimagelist(self):
+        return self.img_List
+
     def Scheduler(self):
         for x in range(self.start, self.stop):
             currentImage = self.img_List[x]

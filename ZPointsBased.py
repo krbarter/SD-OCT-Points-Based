@@ -139,6 +139,9 @@ class Image:
     def getHeat(self):
         return self.s[8]
 
+    def getimagelist(self):
+        return self.img_List
+
     def Scheduler(self):
         for x in range(self.start, self.stop):
             currentImage = self.img_List[self.image_set_number][x]

@@ -245,7 +245,8 @@ class MyPanel(wx.Panel):
         frame = image.getFrameList()
         heat  = image.getHeat()
         dirname = image.getdirname()
-        retinalMap = HeatMap(retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname)
+        image_list = image.getImageList()
+        retinalMap = HeatMap(retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname, image_list)
         retinalMap.sceduler()
 
 class MyApp(wx.App):
