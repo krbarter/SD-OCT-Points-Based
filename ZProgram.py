@@ -24,18 +24,21 @@ class MyPanel(wx.Panel):
 
         # Starting image number        - spin controller
         starting_image_number_label = wx.StaticText(self, label = "Starting Image Number", pos = (10, 45))
+        starting_image_number_label.SetForegroundColour((255,255,255)) # set text color
         self.starting_image_number_spin = wx.SpinCtrl(self, id=-1,pos = (10,60))
         self.starting_image_number_spin.SetValue(4)
         self.starting_image_number_spin.Bind(wx.EVT_SPINCTRL, self.getStartingImage)
         
         # Ending image number          - spin controller
         ending_image_number_label = wx.StaticText(self, label = "Ending Image Number", pos = (10, 95))
+        ending_image_number_label.SetForegroundColour((255,255,255)) # set text color
         self.ending_image_number_spin = wx.SpinCtrl(self, id=-1,pos = (10,110))
         self.ending_image_number_spin.SetValue(96)
         self.ending_image_number_spin.Bind(wx.EVT_SPINCTRL, self.getEndingImage)
 
         # White value threshold        - spin controller
         white_value_threshold_label = wx.StaticText(self, label = "White Value Threshold", pos = (10, 145))
+        white_value_threshold_label.SetForegroundColour((255,255,255)) # set text color
         self.white_value_threshold_spin  = wx.SpinCtrl(self, id=-1,pos = (10,160))
         self.white_value_threshold_spin.SetRange(0, 300)
         self.white_value_threshold_spin.SetValue(100)
@@ -43,12 +46,14 @@ class MyPanel(wx.Panel):
 
         # Minimum gap value (negative) - spin controller
         minimum_gap_value_label     = wx.StaticText(self, label = "Minumum Gap Value", pos = (10, 195))
+        minimum_gap_value_label.SetForegroundColour((255,255,255)) # set text color
         self.minimum_gap_value_spin =  wx.SpinCtrl(self, id=-1,pos = (10,210))
         self.minimum_gap_value_spin.SetValue(35)
         self.minimum_gap_value_spin.Bind(wx.EVT_SPINCTRL, self.getMinimumGapValue)
 
         # Maximum gap value (negative) - spin controller
         maximum_gap_value_label      = wx.StaticText(self, label = "Maximum Gap Value", pos = (10, 245))
+        maximum_gap_value_label.SetForegroundColour((255,255,255)) # set text color
         self.maximum_gap_value_spin  = wx.SpinCtrl(self, id=-1,pos = (10,260))
         self.maximum_gap_value_spin.SetRange(0, 350)
         self.maximum_gap_value_spin.SetValue(135)
@@ -56,6 +61,7 @@ class MyPanel(wx.Panel):
 
         # Minimum pixel gap value      - spin controller
         min_gap_value_label         = wx.StaticText(self, label = "Maximum Gap Value", pos = (10, 295))
+        min_gap_value_label.SetForegroundColour((255,255,255)) # set text color
         self.min_gap_value_spin     = wx.SpinCtrl(self, id=-1,pos = (10,310))
         self.min_gap_value_spin.SetValue(2)
         self.min_gap_value_spin.Bind(wx.EVT_SPINCTRL, self.getMinValue)
@@ -63,10 +69,12 @@ class MyPanel(wx.Panel):
         # Storage type (1 = xls, 2 = xlsx, 3 = csv) - radiobox
         storage_type_options = ["Classic", "Modern", "CSV"]
         self.storage_type_rbox  = wx.RadioBox(self, label = "Storage Type", pos = (10, 345), choices = storage_type_options, style= wx.RA_SPECIFY_ROWS)
+        self.storage_type_rbox.SetForegroundColour((255,255,255)) # set text color
         self.storage_type_rbox.Bind(wx.EVT_RADIOBOX, self.getStorageType)
 
         # Heatmap setting (A for automatic else provide a number to compare sets of heatmaps) - radiobox
         heatmap_setting_label = wx.StaticText(self, label = "Heatmap Setting", pos = (10, 445))
+        heatmap_setting_label.SetForegroundColour((255,255,255)) # set text color
         self.heatmap_setting_textcontrol = wx.TextCtrl(self, pos = (10, 460), size = (125, 30))
         self.heatmap_setting_textcontrol.SetValue("A")
         self.heatmap_setting_textcontrol.Bind(wx.EVT_TEXT, self.getHeatmapSetting)
@@ -74,6 +82,7 @@ class MyPanel(wx.Panel):
         # Smoothing line (S = smoothing line, N = turn off smoothing line) - radiobox
         smoothingline_setting = ["On", "Off"]
         self.smoothingline_setting_rbox = wx.RadioBox(self, label = "Smoothing Line", pos = (10, 495), choices = smoothingline_setting, style= wx.RA_SPECIFY_ROWS)
+        self.smoothingline_setting_rbox.SetForegroundColour((255,255,255)) # set text color
         self.smoothingline_setting_rbox.Bind(wx.EVT_RADIOBOX, self.getSmoothingLineSetting)
 
         # Test Button
@@ -87,24 +96,28 @@ class MyPanel(wx.Panel):
         # -- Adjustment of the width and height of the image using the user inteface
         #start_height
         start_height_label = wx.StaticText(self, label = "Starting Height", pos = (160, 5))
+        start_height_label.SetForegroundColour((255,255,255)) # set text color
         self.start_height_textcontrol = wx.TextCtrl(self, pos = (160, 20), size = (100, 20))
         self.start_height_textcontrol.SetValue("0")
         self.start_height_textcontrol.Bind(wx.EVT_TEXT, self.getStartHeight)
 
         #end_height
         end_height_label = wx.StaticText(self, label = "Ending Height", pos = (290, 5))
+        end_height_label.SetForegroundColour((255,255,255)) # set text color
         self.end_height_textcontrol = wx.TextCtrl(self, pos = (290, 20), size = (100, 20))
         self.end_height_textcontrol.SetValue("500")
         self.end_height_textcontrol.Bind(wx.EVT_TEXT, self.getEndHeight)
 
         #start_width
         start_width_label = wx.StaticText(self, label = "Starting Width", pos = (420, 5))
+        start_width_label.SetForegroundColour((255,255,255)) # set text color
         self.start_width_textcontrol = wx.TextCtrl(self, pos = (420, 20), size = (100, 20))
         self.start_width_textcontrol.SetValue("0")
         self.start_width_textcontrol.Bind(wx.EVT_TEXT, self.getStartWidth)
 
         #end_width
         end_width_label = wx.StaticText(self, label = "Ending Width", pos = (550, 5))
+        end_width_label.SetForegroundColour((255,255,255)) # set text color
         self.end_width_textcontrol = wx.TextCtrl(self, pos = (550, 20), size = (100, 20))
         self.end_width_textcontrol.SetValue("1000")
         self.end_width_textcontrol.Bind(wx.EVT_TEXT, self.getEndWidth)
