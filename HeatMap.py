@@ -52,23 +52,29 @@ class HeatMap:
         self.minR = np.amin(self.retinal_thickness)
         self.maxR = np.amax(self.retinal_thickness)
 
-        self.minR = 23
-        self.maxR = 123
-
         if self.heat == "A" or self.heat == "a":
             self.new_min = np.amin(self.maxR)
         else:
             self.new_min = int(self.heat)
 
-        print(), print("MINUMUM VALUE: ", self.new_min)
-        
+        # new fix
+        self.min_list = []
+        self.max_list = []
+        for x in self.retinal_thickness:
+            test_list = list(map(int, x))
+            if (test_list) != []:
+                if min(test_list) != 0:
+                    self.min_list.append(min(test_list))
+                if max(test_list) != 0:
+                    self.max_list.append(max(test_list))
+            
         for x in self.retinal_thickness_gaps:
             img    = []
             img_3d = []
             for y in x:
                 if y  != "B":
                     img.append(int(y) - self.new_min)     # 155 OS 00014 = 113 for the minumin value for comparison // new_min
-                    img_3d.append(int(y) - self.new_min) 
+                    img_3d.append(int(y) - self.new_min)
                 else:
                     img.append(y)
             self.retinal_array.append(img)
@@ -174,8 +180,14 @@ class HeatMap:
         cv2.putText(blank_image, self.name,(5, 17), font, 0.5,(255,255,255),1,cv2.LINE_AA)
         cv2.putText(blank_image, self.frame_title,(position, 17), font, 0.5,(255,255,255),1,cv2.LINE_AA)
 
-        min_line = str(round(self.minR * 1.62)) + "um"
-        max_line = str(round(self.maxR * 1.62)) + "um"
+        minval = str(round(self.new_min * 1.62))
+        maxval = str(max(self.max_list))
+
+        min_line = minval + "um"
+        max_line = maxval + "um"
+        print(min_line)
+        print(max_line)
+
         cv2.putText(blank_image, min_line,(230, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)
         cv2.putText(blank_image, max_line,(660, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)
 
