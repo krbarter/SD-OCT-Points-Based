@@ -260,7 +260,10 @@ class MyPanel(wx.Panel):
         heat  = image.getHeat()
         dirname = image.getdirname()
         image_list = image.getimagedict()
-        retinalMap = HeatMap(retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname, image_list)
+        max = image.getdisplaymax()
+        min = image.getdisplaymin()
+
+        retinalMap = HeatMap(retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname, image_list, max, min)
         retinalMap.sceduler()
 
 class MyApp(wx.App):

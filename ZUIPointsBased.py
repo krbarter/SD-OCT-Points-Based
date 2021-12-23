@@ -47,6 +47,9 @@ class Image:
             os.makedirs(self.dirname)
         else:
             os.makedirs(self.dirname)
+
+        self.min_list = []
+        self.max_list = []
         
         #layers
         self.outer_distance_list = []
@@ -139,6 +142,12 @@ class Image:
 
     def getimagedict(self):
         return self.image_present_dict
+
+    def getdisplaymax(self):
+        return max(self.max_list)
+
+    def getdisplaymin(self):
+        return min(self.min_list)
 
     def Scheduler(self):
         for x in range(self.start, self.stop):
@@ -406,6 +415,10 @@ class Image:
 
         #collecting the outer distance
         self.retinal_thickness.append(outer_distance)
+
+        #getting the min and max for the use in the heatmap
+        self.min_list.append(min(outer_distance))
+        self.max_list.append(max(outer_distance))
         
         #volume percentage (of each layer compared to the total volume of the retina)
         if outer_distance_volume != 0:

@@ -11,12 +11,15 @@ from matplotlib import cm
 figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
 
 class HeatMap:
-    def __init__(self, retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname, image_list):
+    def __init__(self, retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname, image_list, max, min):
         self.retinal_thickness = retinal_thickness
         self.retinal_thickness_gaps = retinal_thickness_gaps
         self.name = name
         self.dirname = dirname
         self.image_list_dicktionary = image_list
+
+        self.display_max = max
+        self.display_min = min
         
         if len(frame) > 2:
             self.frame_title = "Frame " + str(frame[0]) + "-" + str(frame[-1])
@@ -63,10 +66,9 @@ class HeatMap:
         for x in self.retinal_thickness:
             test_list = list(map(int, x))
             if (test_list) != []:
+                self.max_list.append(max(test_list))
                 if min(test_list) != 0:
                     self.min_list.append(min(test_list))
-                if max(test_list) != 0:
-                    self.max_list.append(max(test_list))
             
         for x in self.retinal_thickness_gaps:
             img    = []
@@ -180,13 +182,14 @@ class HeatMap:
         cv2.putText(blank_image, self.name,(5, 17), font, 0.5,(255,255,255),1,cv2.LINE_AA)
         cv2.putText(blank_image, self.frame_title,(position, 17), font, 0.5,(255,255,255),1,cv2.LINE_AA)
 
+        #getting the min and the max
         minval = str(round(self.new_min * 1.62))
         maxval = str(max(self.max_list))
-
-        min_line = minval + "um"
-        max_line = maxval + "um"
-        print(min_line)
-        print(max_line)
+        
+        min_line = str(self.display_min) + "um"
+        max_line = str(self.display_max) + "um"
+        print(self.display_min)
+        print(self.display_max)
 
         cv2.putText(blank_image, min_line,(230, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)
         cv2.putText(blank_image, max_line,(660, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)

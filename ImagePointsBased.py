@@ -43,6 +43,9 @@ class Image:
                 l.append("B")
             self.outer_distance_gaps.append(l)
 
+        self.min_list = []
+        self.max_list = []
+
         # getting the number of points measured for each frame
         self.outer_distance_measurement_number = []
         self.white_top_measurement_number      = []
@@ -386,6 +389,11 @@ class Image:
 
         #collecting the avarage of each image
         self.outer_distance_list.append(outer_distance_avg)
+
+        #getting the min and max for the use in the heatmap
+        self.min_list.append(min(outer_distance_avg))
+        self.max_list.append(max(outer_distance_avg))
+
         self.white_top_list.append(white_top_avg)
         self.mid_top_list.append(mid_top_avg)
         self.mid_bot_list.append(mid_bot_avg)
