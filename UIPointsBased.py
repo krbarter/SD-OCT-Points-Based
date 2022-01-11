@@ -418,13 +418,14 @@ class Image:
         #self.max_list.append(max(outer_distance))
         
         #volume percentage (of each layer compared to the total volume of the retina)
-        if outer_distance_volume != 0:
-            self.white_top_per = (white_top_volume / outer_distance_volume) *100
-            self.mid_top_per = (mid_top_volume / outer_distance_volume) *100
-            self.mid_bot_per = (mid_bot_volume / outer_distance_volume) *100
-            self.white_bot_per = (white_bot_volume / outer_distance_volume) *100
-            self.inner_distance_per = (inner_distance_volume / outer_distance_volume) *100
-        
+        # New Volume calculation based on the avarage
+        if len(self.outer_distance_list) != 0 and statistics.mean(self.outer_distance_list) != 0:
+            self.white_top_per      = (statistics.mean(self.white_top_list) / statistics.mean(self.outer_distance_list))  *100
+            self.mid_top_per        = (statistics.mean(self.mid_top_list)   / statistics.mean(self.outer_distance_list))  *100
+            self.mid_bot_per        = (statistics.mean(self.mid_bot_list)   / statistics.mean(self.outer_distance_list))  *100
+            self.white_bot_per      = (statistics.mean(self.white_bot_list) / statistics.mean(self.outer_distance_list))  *100
+            self.inner_distance_per = (statistics.mean(self.inner_distance_list) / statistics.mean(self.outer_distance_list)) *100
+
         #formating printout
         print("Number of points: ", len(outer_distance))
         #print("Retinal Thicness: ", outer_distance),  print("Retinal Thicness Avarage: ",        outer_distance_avg), print()
