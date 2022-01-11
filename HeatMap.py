@@ -182,17 +182,15 @@ class HeatMap:
         cv2.putText(blank_image, self.name,(5, 17), font, 0.5,(255,255,255),1,cv2.LINE_AA)
         cv2.putText(blank_image, self.frame_title,(position, 17), font, 0.5,(255,255,255),1,cv2.LINE_AA)
 
-        #getting the min and the max
-        minval = str(round(self.new_min * 1.62))
-        maxval = str(max(self.max_list))
+        minval = str(round(self.new_min * 1.62)) + "um"
+        a = self.new_min + 70
+        maxval = str(round(a * 1.62)) + "um"
         
-        min_line = str(self.display_min) + "um"
-        max_line = str(self.display_max) + "um"
-        print(self.display_min)
-        print(self.display_max)
+        print(minval)
+        print(maxval)
 
-        cv2.putText(blank_image, min_line,(230, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)
-        cv2.putText(blank_image, max_line,(660, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)
+        cv2.putText(blank_image, minval,(230, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)
+        cv2.putText(blank_image, maxval,(660, len(self.retinal_gradient) - 20), font, 1,(255,255,255),1,cv2.LINE_AA)
 
         cv2.imwrite(self.dirname + os.sep + str(self.new_min) + " " + self.file_name + ".tiff", blank_image)
         print(self.file_name + ".tiff")
