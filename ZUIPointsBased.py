@@ -451,7 +451,7 @@ class Image:
         sheet = wb.add_sheet('SD-OST')
         style = xlwt.easyxf('font: bold 1') 
 
-        sheet.write(0, 0, "Frame Number", style)
+        sheet.write(0, 0, "B-scan Number", style)
         sheet.write(0, 2, "Retinal Thickness (um)" , style)
         sheet.write(0, 3, "Number of Readings", style)
         sheet.write(0, 6, "NFL/GLC (um)" , style)
@@ -519,7 +519,7 @@ class Image:
         sheet = workbook.add_worksheet()
         style = workbook.add_format({'bold': True})
 
-        sheet.write(0, 0, "Frame Number", style)
+        sheet.write(0, 0, "B-scan Number", style)
         sheet.write(0, 2, "Retinal Thickness (um)" , style)
         sheet.write(0, 3, "Number of Readings", style)
         sheet.write(0, 6, "NFL/GLC (um)" , style)
@@ -582,7 +582,7 @@ class Image:
         name_start = self.dirname + os.sep + self.animal_number.split(os.sep)[-1]
         listEnd = len(self.outer_distance_list)
         with open(name_start + " " + time_current + ".csv", "w") as file:
-            file.write("Frame Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , IPL/INL (um), Number of Readings, , OPL/ONL/IS/OS/RPE (um), Number of Readings,\n")
+            file.write("B-scan Number, ,Retinal Thickness,Number of Readings, , NFL/GLC (um),Number of Readings, , IPL/INL (um), Number of Readings, , OPL/ONL/IS/OS/RPE (um), Number of Readings,\n")
             for x in range(0, listEnd, 1):
                 outdist = round(self.outer_distance_list[x] * self.newton_meter_conversion, 1)
                 wtop    = round(self.white_top_list[x]* self.newton_meter_conversion, 1)  
