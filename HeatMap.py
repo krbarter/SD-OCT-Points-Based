@@ -10,6 +10,11 @@ from mpl_toolkits import mplot3d
 from matplotlib import cm
 figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
 
+# we got this thing for the 3d thing
+import plotly.graph_objects as go
+from mpl_toolkits.mplot3d import axes3d
+import matplotlib.tri as mtri
+
 class HeatMap:
     def __init__(self, retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname, image_list, max, min):
         self.retinal_thickness = retinal_thickness
@@ -217,9 +222,10 @@ class HeatMap:
     # tring to plot the heatmap in 3d to show the retinal nerve in more context, points are not displaying properly, too mant points when loading the program
     def plot3d(self):
         points = []
-        for x in range(0, len(self.retinal_array_3d)):
-            for y in range(0, len(self.retinal_array_3d[x])):
-                points.append([y, self.retinal_array_3d[x][y], x])
+        for x in self.retinal_array_3d:
+            for i in range(0, len(x)):
+                p = [self.retinal_array_3d.index(x), i, x[i]]
+                points.append(p)
 
         x_p = []
         y_p = []
@@ -229,39 +235,38 @@ class HeatMap:
             y_p.append(points[x][1])
             z_p.append(points[x][2])
 
-
-        if __name__ == "__main__":
-            print(points)
-            #print(x_p)
-            #print(len(y_p))
-            #print(len(z_p))
-        
-        #ax.plot_trisurf(y_p, x_p, z_p, cmap=cm.coolwarm, linewidth=0, antialiased=False)
-
-        # works the same as a scatter plot
-        #for x in range(0, len(points)):
-            #ax.scatter(points[x][0], points[x][1], points[x][2])
-        
-        #ax.scatter(y_p, x_p, z_p, alpha=1)
-        #X, Y = np.meshgrid(x_p, y_p)
-       
-        #ax.contour3D(X, Y, z_p, 50, cmap='binary')
-        #ax.plot_wireframe(X, Y, np.array(z_p), color='black')
-        #ax.plot_trisurf(y_p, x_p, z_p, cmap=cm.coolwarm, linewidth=0, antialiased=True)
-        
-        x = 0
-        def xx(x, y):
-            x = x + 1
-            return x
-
-        # should try building in a different mapping software
-        # 2d z does not make ant sense
-
-        X, Y = np.meshgrid(x_p, y_p)
+        "example 3 - best looking sofar"
         fig = plt.figure()
-        ax = plt.axes(projection='3d')
-        ax.contour3D(X, Y, z_p, 50, cmap='binary')
+        fig.set_size_inches(7, 5)
+        ax = fig.add_subplot(projection='3d')
+        ax.plot_trisurf(x_p, y_p, z_p, cmap=cm.jet, linewidth=0.6, antialiased=False)
         plt.show()
+
+        "example 4 2d z not working"
+        #fig = plt.figure()
+        #ax = plt.axes(projection='3d')
+        #X, Y = np.meshgrid(x_p, y_p)
+        #Z = np.array(z_p).reshape(len(X) * len(Y))
+        #ax.contour3D(X, Y, Z, 50, cmap=cm.coolwarm)
+        #ax.set_title('3D contour')
+        #plt.show()
+
+        "2d z not working"
+        #fig = plt.figure()
+        #ax = plt.axes(projection='3d')
+        #ax.plot_wireframe(np.array(x_p), np.array(y_p), np.array(z_p), cmap=cm.coolwarm, linewidth=1, antialiased=True)
+        #plt.show()
+        
+        "example 2"
+        # outlier points are looking like crap
+        #fig2 = go.Figure(data=[go.Mesh3d(x=x_p, y=y_p, z=z_p, contour_width=2, colorscale="jet",  intensity=z_p)])
+        #fig2.show()
+        
+        "example 1 - bar plot does not have the shape of the retina"
+        #fig = plt.figure()
+        #ax1 = fig.add_subplot(111, projection='3d')
+        #ax1.bar3d(x_p, z_p, 0, 1, 1, y_p)
+        #plt.show()
 
     def sceduler(self):
         HeatMap.gradient(self)
@@ -269,14 +274,12 @@ class HeatMap:
         HeatMap.createImg(self)
 
         # test feature
-        #if __name__ == "__main__":
-            #HeatMap.plot3d(self)     
+        HeatMap.plot3d(self)     
 
 if __name__ == "__main__":
     retinal_thickness = [[50, 25], [25, 10], [10]]
     retinal_thickness_g = [[50, "B", 25], [25, 10], [10]]
-
     dirname = ""
     img_list = ["one", "two","three"]
-    retinalMap = HeatMap(retinal_thickness, "Some", [40, 40], 0, retinal_thickness_g, dirname, img_list)
+    retinalMap = HeatMap(retinal_thickness, "Some", [40, 40], 0, retinal_thickness_g, dirname, img_list, 100, 0)
     retinalMap.sceduler()
