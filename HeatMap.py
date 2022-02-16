@@ -9,6 +9,7 @@ from matplotlib.pyplot import figure
 from mpl_toolkits import mplot3d
 from matplotlib import cm
 figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
+import matplotlib.colors
 
 # we got this thing for the 3d thing
 import plotly.graph_objects as go
@@ -25,6 +26,8 @@ class HeatMap:
 
         self.display_max = max
         self.display_min = min
+
+        self.color_gradient_3d = []
         
         if len(frame) > 2:
             self.frame_title = "Frame " + str(frame[0]) + "-" + str(frame[-1])
@@ -84,6 +87,7 @@ class HeatMap:
                     img_3d.append(int(y) - self.new_min)
                 else:
                     img.append(y)
+                    img_3d.append(0)
             self.retinal_array.append(img)
             self.retinal_array_3d.append(img_3d)
 
@@ -101,6 +105,14 @@ class HeatMap:
 
                         [255,0,0], [240,0,0], [225,0,0], [210,0,0], [195,0,0], [180,0,0],
                         [165,0,0], [150,0,0], [135,0,0], [120,0,0], [105,0,0]]                               #Red
+
+        self.color_gradient.insert(0, [0,0,0])
+        for x in self.color_gradient:
+            n = []
+            for y in x:
+                n.append(y / 255.0)
+            self.color_gradient_3d.append(n)
+        
 
         self.color_key = [x for x in self.color_gradient for i in range(10)]
 
@@ -236,10 +248,25 @@ class HeatMap:
             z_p.append(points[x][2])
 
         "example 3 - best looking sofar"
+
+        # coulour map new
+        newmap = matplotlib.colors.ListedColormap(self.color_gradient_3d)
+
         fig = plt.figure()
         fig.set_size_inches(7, 5)
         ax = fig.add_subplot(projection='3d')
-        ax.plot_trisurf(x_p, y_p, z_p, cmap=cm.jet, linewidth=0.6, antialiased=False)
+
+        # labels
+        ax.set_xlabel('Number of Images') 
+        ax.set_ylabel('Width of Images')
+        ax.set_zlabel('Height')
+
+        heatmap = ax.plot_trisurf(x_p, y_p, z_p, cmap=newmap, linewidth=0.6, antialiased=False, vmin = 1, vmax = len(self.color_gradient))
+                    
+        # colour line
+        cbar = plt.colorbar(heatmap)
+        
+        #ax.plot_trisurf(x_p, y_p, z_p, cmap=cm.jet, linewidth=0.6, antialiased=False)
         plt.show()
 
         "example 4 2d z not working"
