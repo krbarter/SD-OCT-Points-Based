@@ -5,10 +5,10 @@ import numpy as np
 import matplotlib.image as mpimg
 from time import gmtime, strftime
 from matplotlib import pyplot as plt
-from matplotlib.pyplot import figure
+#from matplotlib.pyplot import figure
 from mpl_toolkits import mplot3d
 from matplotlib import cm
-figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
+#figure(num=None, figsize=(10, 10.24), dpi=96, facecolor='w', edgecolor='k')
 import matplotlib.colors
 
 # we got this thing for the 3d thing
@@ -226,7 +226,7 @@ class HeatMap:
         #print(self.image_list_dicktionary)
         cv2.imshow("Retinal Heatmap", blank_image)
         cv2.setMouseCallback("Retinal Heatmap", onMouse)
-        cv2.waitKey(0)
+        #cv2.waitKey(0)
         
 
 
@@ -253,7 +253,6 @@ class HeatMap:
         newmap = matplotlib.colors.ListedColormap(self.color_gradient_3d)
 
         fig = plt.figure()
-        fig.set_size_inches(7, 5)
         ax = fig.add_subplot(projection='3d')
 
         # labels
@@ -267,7 +266,10 @@ class HeatMap:
         cbar = plt.colorbar(heatmap)
         
         #ax.plot_trisurf(x_p, y_p, z_p, cmap=cm.jet, linewidth=0.6, antialiased=False)
+
+        # loading both the 2d and 3d heatmaps at the same time
         plt.show()
+        cv2.waitKey(0)
 
         "example 4 2d z not working"
         #fig = plt.figure()
