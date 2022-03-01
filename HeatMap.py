@@ -245,7 +245,10 @@ class HeatMap:
         for x in range(0, len(points)):
             x_p.append(points[x][0])
             y_p.append(points[x][1])
+
             z_p.append(points[x][2])
+            #pp = int((points[x][2]) * 1.62)
+            #z_p.append(pp)
 
         "example 3 - best looking sofar"
 
@@ -254,11 +257,14 @@ class HeatMap:
 
         fig = plt.figure()
         ax = fig.add_subplot(projection='3d')
+        
+        #value = int((len(self.color_gradient) + self.new_min) * 1.62)
+        #default_x_ticks = range(value)
 
         # labels
         ax.set_xlabel('Number of Images') 
         ax.set_ylabel('Width of Images')
-        ax.set_zlabel('Height')
+        ax.set_zlabel('Height (Outer - Inner Retina)')
 
         heatmap = ax.plot_trisurf(x_p, y_p, z_p, cmap=newmap, linewidth=0.6, antialiased=False, vmin = 1, vmax = len(self.color_gradient))
                     
