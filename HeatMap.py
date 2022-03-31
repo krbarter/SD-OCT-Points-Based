@@ -246,8 +246,10 @@ class HeatMap:
             x_p.append(points[x][0])
             y_p.append(points[x][1])
 
-            z_p.append(points[x][2])
+            z_adjusted = int((points[x][2] + self.new_min) * 1.62)
+            z_p.append(z_adjusted)
             #pp = int((points[x][2]) * 1.62)
+            
             #z_p.append(pp)
 
         "example 3 - best looking sofar"
@@ -262,12 +264,12 @@ class HeatMap:
         #default_x_ticks = range(value)
 
         # labels
-        ax.set_xlabel('Number of Images') 
-        ax.set_ylabel('Width of Images')
-        ax.set_zlabel('Height (Outer - Inner Retina)')
+        ax.set_xlabel('B-scan number') 
+        ax.set_ylabel('B-scan width (pixels)')
+        ax.set_zlabel('Retinal thickness (um)')
 
-        heatmap = ax.plot_trisurf(x_p, y_p, z_p, cmap=newmap, linewidth=0.6, antialiased=False, vmin = 1, vmax = len(self.color_gradient))
-                    
+        m = int((self.new_min + len(self.color_gradient)) * 1.62)
+        heatmap = ax.plot_trisurf(x_p, y_p, z_p, cmap=newmap, linewidth=0.6, antialiased=False, vmin = int((self.new_min) * 1.62 - 1), vmax = m)
         # colour line
         cbar = plt.colorbar(heatmap)
         
@@ -276,32 +278,11 @@ class HeatMap:
         # loading both the 2d and 3d heatmaps at the same time
         plt.show()
         cv2.waitKey(0)
-
-        "example 4 2d z not working"
-        #fig = plt.figure()
-        #ax = plt.axes(projection='3d')
-        #X, Y = np.meshgrid(x_p, y_p)
-        #Z = np.array(z_p).reshape(len(X) * len(Y))
-        #ax.contour3D(X, Y, Z, 50, cmap=cm.coolwarm)
-        #ax.set_title('3D contour')
-        #plt.show()
-
-        "2d z not working"
-        #fig = plt.figure()
-        #ax = plt.axes(projection='3d')
-        #ax.plot_wireframe(np.array(x_p), np.array(y_p), np.array(z_p), cmap=cm.coolwarm, linewidth=1, antialiased=True)
-        #plt.show()
         
         "example 2"
         # outlier points are looking like crap
         #fig2 = go.Figure(data=[go.Mesh3d(x=x_p, y=y_p, z=z_p, contour_width=2, colorscale="jet",  intensity=z_p)])
         #fig2.show()
-        
-        "example 1 - bar plot does not have the shape of the retina"
-        #fig = plt.figure()
-        #ax1 = fig.add_subplot(111, projection='3d')
-        #ax1.bar3d(x_p, z_p, 0, 1, 1, y_p)
-        #plt.show()
 
     def sceduler(self):
         HeatMap.gradient(self)
