@@ -1,4 +1,4 @@
-""" © 2019-2020 Kent Barter All Rights Reserved """
+""" © 2019-2022 Kent Barter All Rights Reserved """
 import os
 import cv2
 import xlwt
@@ -342,7 +342,7 @@ class Image:
         if sl == "s":
             image_s = cv2.cvtColor(smooth,cv2.COLOR_RGB2BGR)
             path = "SmoothingLine"
-            name = name_start + "  " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
+            name = self.animal_number.split(os.sep)[-1] + "  " + str(self.frame_list[-1]) + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
             mpimg.imsave(os.path.join(path , name), image_s)
 
         #getting the heatmap points for each image

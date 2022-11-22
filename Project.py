@@ -12,7 +12,8 @@ class Directory:
     def openDirectory(self):
         if os.path.isdir(self.directory_name) == True:
             for x in os.listdir(self.directory_name):
-                self.imageGroups.append("Data/" + x)
+                path = "Data"
+                self.imageGroups.append(os.path.join(path, x))
         else:
             return "Input is not a valid drectory"
 
@@ -21,6 +22,6 @@ class Directory:
             if os.path.isdir(x) == True:
                 for y in os.listdir(x):
                     if y.endswith(".TIFF"):
-                        imgs.append(x + str(os.sep) + y)
+                        imgs.append(os.path.join(x, y))
             self.img_input.append(imgs)
         return self.img_input
