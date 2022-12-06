@@ -129,9 +129,9 @@ class MyPanel(wx.Panel):
         if dlg.ShowModal() == wx.ID_OK:
             self.dirname = dlg.GetPath()
             if os.path.isdir(self.dirname):
-                for y in os.listdir(self.dirname):
+                for y in sorted(os.listdir(self.dirname)):
                     if y.endswith(".TIFF"):
-                        self.imgs.append(self.dirname + os.sep + y)
+                        self.imgs.append(os.path.join(self.dirname, y))
 
             if len(self.imgs) >= 2:
                 toshow = round(len(self.imgs) / 2)
