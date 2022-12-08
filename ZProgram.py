@@ -84,6 +84,7 @@ class MyPanel(wx.Panel):
         heatmap_selector_label.SetForegroundColour((255,255,255)) # set text color
         heatmap_options = ["Original", "Viridis", "Plasma", "Inferno", "Magma"]
         self.heatmap_selector_label_combobox = wx.ComboBox(self, pos=(10, 515),  size = (125, 30), choices=heatmap_options, style=wx.CB_READONLY)
+        self.heatmap_selector_label_combobox.SetValue("Original")
         self.heatmap_selector_label_combobox.Bind(wx.EVT_COMBOBOX, self.getHeatmapOptions)
         
         # Smoothing line (S = smoothing line, N = turn off smoothing line) - radiobox
