@@ -98,6 +98,9 @@ class Image:
         self.white_bot_per      = 0
         self.inner_distance_per = 0
 
+        # OUTPUT SETTINGS
+        self.image_present_dict = dict()
+
         #Novel characteristics of the cultured Lumpfish Cyclopterus lumpus eye during post-hatch larval and juvenile developmental stages
         #Retinal Thickness - nfl to post
         #top white         - nfl to glc
@@ -142,6 +145,18 @@ class Image:
 
     def getHeat(self):
         return self.s[8]
+
+    def getimagedict(self):
+        return self.image_present_dict
+
+    def getHeatmapOptions(self):
+        return str(self.s[10])
+
+    def getdisplaymax(self):
+        return self.max_list
+
+    def getdisplaymin(self):
+        return self.min_list
 
     def Scheduler(self):
         for x in range(self.start, self.stop):
@@ -337,6 +352,7 @@ class Image:
         #name = time_current = strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
         self.name = self.animal_number.split(os.sep)[-1]
         name = self.name + " " + strftime("%Y-%m-%d %H-%M-%S", gmtime()) + ".tiff"
+        self.image_present_dict[currentImage] = os.path.join(path , name)
         mpimg.imsave(os.path.join(path , name), image_crop)
 
         if sl == "s":
@@ -391,8 +407,8 @@ class Image:
         self.outer_distance_list.append(outer_distance_avg)
 
         #getting the min and max for the use in the heatmap
-        self.min_list.append(min(outer_distance_avg))
-        self.max_list.append(max(outer_distance_avg))
+        self.min_list.append(min(self.outer_distance_list))
+        self.max_list.append(max(self.outer_distance_list))
 
         self.white_top_list.append(white_top_avg)
         self.mid_top_list.append(mid_top_avg)
@@ -587,7 +603,14 @@ def __main__():
     frame = image.getFrameList()
     heat = image.getHeat()
     gaps = image.getRetinalThicknessGaps()
-    retinalMap = HeatMap(retinal_thickness, name, frame, heat, gaps)
+    dirname = os.path.dirname(os.path.realpath("ImagePointsBased.py"))
+    image_list = image.getimagedict()
+    max = image.getdisplaymax()
+    min = image.getdisplaymin()
+    heatmap_options = image.getHeatmapOptions()
+    
+    # max, min, heatmap_options
+    retinalMap = HeatMap(retinal_thickness, name, frame, heat, gaps, dirname, image_list, min, max, heatmap_options)
     retinalMap.sceduler()
 
     #creating retinal heatmap2

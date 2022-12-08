@@ -7,7 +7,7 @@ from ZUIPointsBased import Image
 
 class MyFrame(wx.Frame):
     def __init__(self, parent, title):
-        super(MyFrame, self).__init__(parent, title= title, size = (700,680))
+        super(MyFrame, self).__init__(parent, title= title, size = (700,735))
         self.panel = MyPanel(self)
         self.SetBackgroundColour("#2B4562")
         self.SetForegroundColour("#2B4562")
@@ -73,24 +73,31 @@ class MyPanel(wx.Panel):
         self.storage_type_rbox.Bind(wx.EVT_RADIOBOX, self.getStorageType)
 
         # Heatmap setting (A for automatic else provide a number to compare sets of heatmaps) - radiobox
-        heatmap_setting_label = wx.StaticText(self, label = "Heatmap Setting", pos = (10, 445))
+        heatmap_setting_label = wx.StaticText(self, label = "Heatmap Setting", pos = (10, 448))
         heatmap_setting_label.SetForegroundColour((255,255,255)) # set text color
-        self.heatmap_setting_textcontrol = wx.TextCtrl(self, pos = (10, 460), size = (125, 30))
+        self.heatmap_setting_textcontrol = wx.TextCtrl(self, pos = (10, 463), size = (125, 30))
         self.heatmap_setting_textcontrol.SetValue("A")
         self.heatmap_setting_textcontrol.Bind(wx.EVT_TEXT, self.getHeatmapSetting)
+
+        # Heatmap Slector
+        heatmap_selector_label = wx.StaticText(self, label = "Heatmap Slector", pos = (10, 498))
+        heatmap_selector_label.SetForegroundColour((255,255,255)) # set text color
+        heatmap_options = ["Original", "Viridis", "Plasma", "Inferno", "Magma"]
+        self.heatmap_selector_label_combobox = wx.ComboBox(self, pos=(10, 515),  size = (125, 30), choices=heatmap_options, style=wx.CB_READONLY)
+        self.heatmap_selector_label_combobox.Bind(wx.EVT_COMBOBOX, self.getHeatmapOptions)
         
         # Smoothing line (S = smoothing line, N = turn off smoothing line) - radiobox
         smoothingline_setting = ["On", "Off"]
-        self.smoothingline_setting_rbox = wx.RadioBox(self, label = "Smoothing Line", pos = (10, 495), choices = smoothingline_setting, style= wx.RA_SPECIFY_ROWS)
+        self.smoothingline_setting_rbox = wx.RadioBox(self, label = "Smoothing Line", pos = (10, 543), choices = smoothingline_setting, style= wx.RA_SPECIFY_ROWS)
         self.smoothingline_setting_rbox.SetForegroundColour((255,255,255)) # set text color
         self.smoothingline_setting_rbox.Bind(wx.EVT_RADIOBOX, self.getSmoothingLineSetting)
 
         # Test Button
-        self.test = wx.Button(self, label = "Test", pos = (10, 572), size = (125, 30))
+        self.test = wx.Button(self, label = "Test", pos = (10, 622), size = (125, 30))
         self.test.Bind(wx.EVT_BUTTON, self.getTest)
 
         # Start Button
-        self.start = wx.Button(self, label = "Start", pos = (10, 607), size = (125, 30))
+        self.start = wx.Button(self, label = "Start", pos = (10, 657), size = (125, 30))
         self.start.Bind(wx.EVT_BUTTON, self.getStart)
 
         # -- Adjustment of the width and height of the image using the user inteface
@@ -170,6 +177,10 @@ class MyPanel(wx.Panel):
 
     def getHeatmapSetting(self, event):
         self.heatmap_setting = str(self.heatmap_setting_textcontrol.GetValue())
+    
+    def getHeatmapOptions(self, event):
+        self.heatmap_options = event.GetString()
+        self.heatmap_selector_label_combobox.SetLabel(self.heatmap_options)
 
     def getSmoothingLineSetting(self, event):
         self.smoothingline_setting = self.smoothingline_setting_rbox.GetStringSelection()
@@ -262,7 +273,8 @@ class MyPanel(wx.Panel):
         max = image.getdisplaymax()
         min = image.getdisplaymin()
 
-        retinalMap = HeatMap(retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname, image_list, max, min)
+        # self.heatmap_options
+        retinalMap = HeatMap(retinal_thickness, name, frame, heat, retinal_thickness_gaps, dirname, image_list, max, min, self.heatmap_options)
         retinalMap.sceduler()
 
 class MyApp(wx.App):
