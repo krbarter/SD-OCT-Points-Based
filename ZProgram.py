@@ -60,7 +60,7 @@ class MyPanel(wx.Panel):
         self.maximum_gap_value_spin.Bind(wx.EVT_SPINCTRL, self.getMaximumGapValue)
 
         # Minimum pixel gap value      - spin controller
-        min_gap_value_label         = wx.StaticText(self, label = "Maximum Gap Value", pos = (10, 295))
+        min_gap_value_label         = wx.StaticText(self, label = "Minimum Pixel Gap", pos = (10, 295))
         min_gap_value_label.SetForegroundColour((255,255,255)) # set text color
         self.min_gap_value_spin     = wx.SpinCtrl(self, id=-1,pos = (10,310))
         self.min_gap_value_spin.SetValue(2)
